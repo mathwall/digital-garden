@@ -1,20 +1,34 @@
 ---
-import { getCollection } from 'astro:content'
+import { type InferEntrySchema, type RenderedContent } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const title = 'Blog';
-const description = 'Latest articles.';
-const permalink = `${Astro.site.href}blog`;
+export interface Props {
+  pageTitle: string;
+  title: string;
+  description: string;
+  permalink: string;
+  current: string;
+  posts: {
+    id: string;
+    body?: string;
+    collection: "cicdPosts"|"cssPosts";
+    data: InferEntrySchema<"cicdPosts"|"cssPosts">;
+    rendered?: RenderedContent;
+    filePath?: string;
+}[];
+}
+// TODO rename "current"
+// TODO rename "title", "description"
+const { pageTitle, title, description, permalink, current, posts } = Astro.props;
 
-let allPosts = await getCollection('posts')
-allPosts = allPosts.sort((a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf());
+
 ---
 
-<BaseLayout title={title} description={description} permalink={permalink} current="blog">
+<BaseLayout title={title} description={description} permalink={permalink} current={current}>
   <div class="container">
-    <h1>Blog</h1>
-    {allPosts.map((post, index) => {
-      const href = `/blog/${post.data.slug}`;
+    <h1>{pageTitle}</h1>
+    {posts.map((post, index) => {
+      const href = `/${current}/${post.data.slug}`;
       return (
         <div>
           { index !== 0 && <hr /> }
