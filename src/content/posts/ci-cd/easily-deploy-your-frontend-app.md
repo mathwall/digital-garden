@@ -5,8 +5,6 @@ publishDate: 26 Sept 2025
 description: Some feedback on my experience deploying this blog
 ---
 
-![Illustration of woman using a meditation app](/assets/blog/casual-life-3d-meditation-crystal.webp)
-
 I wanted to test several ways to deploy a simple app and train myself a bit on CI/CD.
 
 ## Buy a domain name on a DNS provider

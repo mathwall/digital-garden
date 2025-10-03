@@ -5,7 +5,6 @@ publishDate: 26 Sept 2025
 description: A quick guide on font formats
 ---
 
-![Illustration of woman using a meditation app](/assets/blog/casual-life-3d-meditation-crystal.webp)
 Choose WOFF2!
 
 ## TTF TrueType Fonts

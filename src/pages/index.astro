@@ -24,9 +24,10 @@ const permalink = Astro.site.href;
         the comfort of a structured codebase like in modern JS Frameworks.
       </p>
       <p>
-        This site is built for fun. I played with css animations such as this
-        one where you can <button class="make-it-rain">make it rain</button> on your
-        screen.
+        This site is built for fun and for learning. I played with css
+        animations such as this one where you can <button class="make-it-rain"
+          >make it rain</button
+        > on your screen.
       </p>
     </div>
   </div>
@@ -35,7 +36,7 @@ const permalink = Astro.site.href;
     import { range, random } from "lodash";
     const rainButton = document.querySelector(".make-it-rain");
 
-    rainButton!.addEventListener("click", () => {
+    rainButton!.addEventListener("mouseover", () => {
       const particlesContainer = document.querySelector(".home-container");
 
       range(10).forEach(() => {
@@ -45,12 +46,20 @@ const permalink = Astro.site.href;
         rainDrop.style.position = "absolute";
         rainDrop.style.top = "0px";
         rainDrop.style.left = random(0, 100) + "%";
+        // TODO add random duration
+        rainDrop.style.animation = `fall 1000ms`;
         particlesContainer!.appendChild(rainDrop);
       });
+      // TODO remove particles once the animation is finished
     });
   </script>
 
   <style>
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
     .home-container {
       position: relative;
       margin: 2em 0;

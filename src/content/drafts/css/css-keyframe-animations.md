@@ -24,6 +24,7 @@ description: Fundamentals of CSS animations
 ```
 
 the keyframe can go `from`/`to`, but it can also be more specific with percentages to define the steps: `0%`/`25%`/`50%`/`100%`...
+we can also only specify a `to` or a `from` value. In this case it will start from the element's current value, or end to the element's current value
 
 each keyframe animation needs a name, then it can be used anywhere in the css code, as a value of the `animation` css property, like this:
 
