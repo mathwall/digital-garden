@@ -1,0 +1,78 @@
+---
+import Umbrella from "./icons/Umbrella.astro";
+---
+
+<script>
+  import { range, random } from "lodash";
+
+  const createDrop = (container: Element): HTMLDivElement => {
+    const rainDrop = document.createElement("div");
+    const dropSize = random(2, 5);
+    const dropDuration = random(500, 1000);
+
+    rainDrop.style = `
+        width: ${dropSize}px;
+        height: ${dropSize + 2}px;
+        position: absolute;
+        top: 0%;
+        left: ${random(0, 100)}%;
+        background: linear-gradient(135deg, rgba(131, 180, 195, 0.5), rgba(131, 180, 195, 1));
+        border-radius: 50%;
+        animation: fall ${dropDuration}ms linear infinite;
+      `;
+
+    container.appendChild(rainDrop);
+    return rainDrop;
+  };
+
+  const handleRain = (rainButton: Element) => {
+    const rainDrops: HTMLDivElement[] = [];
+    let rainDropsInterval: NodeJS.Timeout;
+
+    const clearRain = () => {
+      clearInterval(rainDropsInterval);
+      rainDrops.forEach((rainDrop) => {
+        rainDrop.remove();
+      });
+      rainDrops.splice(0, rainDrops.length);
+    };
+
+    rainButton.addEventListener("mousedown", () => {
+      const particlesContainer = document.querySelector("body");
+      if (!particlesContainer) return;
+      rainDropsInterval = setInterval(() => {
+        if (rainDrops.length < 700) {
+          range(15).forEach(() => {
+            const rainDrop = createDrop(particlesContainer);
+            rainDrops.push(rainDrop);
+          });
+        }
+      }, 100);
+    });
+
+    rainButton.addEventListener("mouseup", clearRain);
+    rainButton.addEventListener("mouseout", clearRain);
+  };
+
+  const rainButton = document.querySelector(".make-it-rain");
+  if (rainButton) {
+    handleRain(rainButton);
+  }
+</script>
+
+<style>
+  @keyframes fall {
+    to {
+      transform: translateY(100vh);
+    }
+  }
+
+  .make-it-rain {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+
+<button>
+  <div class="make-it-rain"><Umbrella /></div>
+</button>

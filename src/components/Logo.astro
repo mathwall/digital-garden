@@ -9,14 +9,14 @@ import Plant from "./icons/Plant.astro";
     height: 50px;
   }
 
-  a:hover {
+  #logo:hover {
     cursor:
       url("/assets/watering-can-blue.svg") 1 22,
       auto;
   }
 
   :root.theme-dark {
-    a:hover {
+    #logo:hover {
       cursor:
         url("/assets/watering-can-white.svg") 1 22,
         auto;
@@ -30,7 +30,7 @@ import Plant from "./icons/Plant.astro";
   }
 </style>
 
-<a href="/">
+<a id="logo" href="/">
   <div>
     <Plant />
   </div>
