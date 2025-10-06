@@ -1,6 +1,7 @@
 ---
-import ThemeToggleButton from './ThemeToggleButton.svelte';
-const { current = '' } = Astro.props;
+import RainButton from "./RainButton.astro";
+import ThemeToggleButton from "./ThemeToggleButton.svelte";
+const { current = "" } = Astro.props;
 ---
 
 <style>
@@ -30,9 +31,9 @@ const { current = '' } = Astro.props;
   }
 
   a::before {
-    content: '';
+    content: "";
     position: absolute;
-    transition: transform .3s ease;
+    transition: transform 0.3s ease;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -69,4 +70,5 @@ const { current = '' } = Astro.props;
   <div class="theme-toggle-container">
     <ThemeToggleButton client:load />
   </div>
+  <RainButton client:load />
 </nav>
