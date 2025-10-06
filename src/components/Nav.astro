@@ -60,13 +60,13 @@ const { current = "" } = Astro.props;
       margin-right: 1em;
     }
   }
-
 </style>
 
 <nav>
-  <a class={current === "" ? "selected" : ""} href='/'>home</a>
-  <a class={current === "about" ? "selected" : ""} href='/about'>about</a>
-  <a class={current === "blog" ? "selected" : ""} href='/blog'>blog</a>
+  <a class={current === "" ? "selected" : ""} href="/">home</a>
+  <a class={current === "about" ? "selected" : ""} href="/about">about</a>
+  <a class={current === "ci-cd" ? "selected" : ""} href="/ci-cd">CI/CD</a>
+  <a class={current === "css" ? "selected" : ""} href="/css">CSS</a>
   <div class="theme-toggle-container">
     <ThemeToggleButton client:load />
   </div>

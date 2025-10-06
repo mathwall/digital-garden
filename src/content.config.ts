@@ -1,9 +1,9 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-const posts = defineCollection({
-  // Load Markdown and MDX files in the `src/content/blog/` directory.
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog-posts" }),
+const cssPosts = defineCollection({
+  // Load Markdown and MDX files in the `src/content/posts/` directory.
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts/css" }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
@@ -12,4 +12,15 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const cicdPosts = defineCollection({
+  // Load Markdown and MDX files in the `src/content/posts/` directory.
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts/ci-cd" }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    publishDate: z.union([z.string(), z.date()]),
+    description: z.string(),
+  }),
+});
+
+export const collections = { cssPosts, cicdPosts };

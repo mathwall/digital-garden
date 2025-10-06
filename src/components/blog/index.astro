@@ -1,0 +1,72 @@
+---
+import { type InferEntrySchema, type RenderedContent } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export interface Props {
+  pageTitle: string;
+  title: string;
+  description: string;
+  permalink: string;
+  current: string;
+  posts: {
+    id: string;
+    body?: string;
+    collection: "cicdPosts" | "cssPosts";
+    data: InferEntrySchema<"cicdPosts" | "cssPosts">;
+    rendered?: RenderedContent;
+    filePath?: string;
+  }[];
+}
+
+const { pageTitle, title, description, permalink, current, posts } =
+  Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  permalink={permalink}
+  current={current}
+>
+  <div class="container">
+    <h1>{pageTitle}</h1>
+    {
+      posts.map((post, index) => {
+        const href = `/${current}/${post.data.slug}`;
+        return (
+          <div>
+            {index !== 0 && <hr />}
+            <div class="post-item">
+              <h2>
+                <a href={href}>{post.data.title}</a>
+              </h2>
+              <p>{post.data.description}</p>
+              <div class="post-item-footer">
+                <span class="post-item-date">— {post.data.publishDate}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  h2,
+  .post-item-footer {
+    font-family: var(--font-family-sans);
+    font-weight: 700;
+  }
+
+  .post-item-date {
+    color: var(--text-secondary);
+    text-align: left;
+    text-transform: uppercase;
+    margin-right: 16px;
+  }
+
+  hr {
+    margin: 60px auto;
+  }
+</style>
