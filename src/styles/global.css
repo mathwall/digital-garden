@@ -1,17 +1,17 @@
 :root {
-  --background-body: #c2c5aa;
-  --text-main: #333d29;
+  --background-body: #f4f1de;
+  --text-main: #0d1c0d;
   --text-secondary: #526241;
-  --primary-color: #7d80da; /*#ff8552*/
+  --primary-color: #83b4c3;
   --font-family-serif: "Cedarville Cursive", serif;
   --font-family-sans: "Ubuntu", sans-serif;
 }
 
 :root.theme-dark {
-  --background-body: #333d29;
-  --text-main: #c2c5aa;
+  --background-body: #0d1c0d;
+  --text-main: #d8fdda;
   --text-secondary: #8d9263;
-  --primary-color: #7d80da;
+  --primary-color: #83b4c3;
 }
 
 html {
