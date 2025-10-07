@@ -29,6 +29,20 @@ import Umbrella from "./icons/Umbrella.astro";
     const rainDrops: HTMLDivElement[] = [];
     let rainDropsInterval: NodeJS.Timeout;
 
+    const startRain = () => {
+      const particlesContainer = document.querySelector("body");
+      if (!particlesContainer) return;
+
+      rainDropsInterval = setInterval(() => {
+        if (rainDrops.length < 700) {
+          range(15).forEach(() => {
+            const rainDrop = createDrop(particlesContainer);
+            rainDrops.push(rainDrop);
+          });
+        }
+      }, 100);
+    };
+
     const clearRain = () => {
       clearInterval(rainDropsInterval);
       rainDrops.forEach((rainDrop) => {
@@ -38,20 +52,15 @@ import Umbrella from "./icons/Umbrella.astro";
     };
 
     rainButton.addEventListener("mousedown", () => {
-      const particlesContainer = document.querySelector("body");
-      if (!particlesContainer) return;
-      rainDropsInterval = setInterval(() => {
-        if (rainDrops.length < 700) {
-          range(15).forEach(() => {
-            const rainDrop = createDrop(particlesContainer);
-            rainDrops.push(rainDrop);
-          });
-        }
-      }, 100);
+      // TODO understand why the mouse down event is not fired as soon as we switch tab
+      console.log("mouse down on rain button");
+      startRain();
     });
 
+    rainButton.addEventListener("touchstart", startRain);
     rainButton.addEventListener("mouseup", clearRain);
     rainButton.addEventListener("mouseout", clearRain);
+    rainButton.addEventListener("touchend", clearRain);
   };
 
   const rainButton = document.querySelector(".make-it-rain");
