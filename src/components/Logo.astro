@@ -3,7 +3,7 @@ import Plant from "./icons/Plant.astro";
 ---
 
 <style>
-  div {
+  #logo {
     display: block;
     width: 50px;
     height: 50px;
@@ -24,14 +24,16 @@ import Plant from "./icons/Plant.astro";
   }
 
   @media screen and (max-width: 520px) {
-    div {
-      display: none;
+    .logo-container {
+      display: flex;
+      width: 100%;
+      justify-content: center;
     }
   }
 </style>
 
-<a id="logo" href="/">
-  <div>
+<div class="logo-container">
+  <a id="logo" href="/">
     <Plant />
-  </div>
-</a>
+  </a>
+</div>
