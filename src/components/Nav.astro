@@ -4,6 +4,37 @@ import ThemeToggleButton from "./ThemeToggleButton.svelte";
 const { current = "" } = Astro.props;
 ---
 
+<script>
+  let isNavbarVisible = false;
+  const navbarLine = document.querySelector(".navbar-line");
+  const navbar = document.querySelector("nav");
+  if (navbarLine && navbar) {
+    navbarLine.addEventListener("touchend", () => {
+      if (isNavbarVisible) {
+        navbar.style.transform = "translateY(100%)";
+      } else {
+        navbar.style.transform = "translateY(0)";
+      }
+      isNavbarVisible = !isNavbarVisible;
+    });
+  }
+</script>
+
+<nav>
+  <div class="navbar-line"></div>
+  <a class={current === "" ? "selected" : ""} href="/">home</a>
+  <!-- temporarily remove since it's an empty page -->
+  <!-- <a class={current === "about" ? "selected" : ""} href="/about">about</a> -->
+  <a class={current === "ci-cd" ? "selected" : ""} href="/ci-cd">CI/CD</a>
+  <a class={current === "css" ? "selected" : ""} href="/css">CSS</a>
+  <div class="weather-options-container">
+    <div class="theme-toggle-container">
+      <ThemeToggleButton client:load />
+    </div>
+    <RainButton client:idle />
+  </div>
+</nav>
+
 <style>
   nav {
     align-items: center;
@@ -55,21 +86,58 @@ const { current = "" } = Astro.props;
     width: 75px;
   }
 
+  .navbar-line {
+    display: none;
+  }
+
+  .weather-options-container {
+    display: flex;
+    height: fit-content;
+    align-items: center;
+  }
+
   @media screen and (max-width: 520px) {
+    .navbar-line {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: -39px;
+      width: 100%;
+      height: 40px;
+      border-radius: 15px 15px 0px 0px;
+      background-color: var(--text-secondary);
+    }
+    .navbar-line::after {
+      content: "";
+      position: absolute;
+      /* 50px is half the line width */
+      left: calc(50vw - 50px);
+      bottom: 10px;
+      width: 100px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--background-body);
+    }
+
     .theme-toggle-container {
       margin-right: 1em;
     }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      transform: translateY(100%);
+      flex-direction: column;
+      background-color: var(--text-secondary);
+      width: 100%;
+      gap: 10px;
+      padding: 10px 0px;
+      z-index: 10000;
+      transition: transform 500ms;
+    }
+
+    nav > * {
+      margin-left: 0;
+    }
   }
 </style>
-
-<nav>
-  <a class={current === "" ? "selected" : ""} href="/">home</a>
-  <!-- temporarily remove since it's an empty page -->
-  <!-- <a class={current === "about" ? "selected" : ""} href="/about">about</a> -->
-  <a class={current === "ci-cd" ? "selected" : ""} href="/ci-cd">CI/CD</a>
-  <a class={current === "css" ? "selected" : ""} href="/css">CSS</a>
-  <div class="theme-toggle-container">
-    <ThemeToggleButton client:load />
-  </div>
-  <RainButton client:idle />
-</nav>
