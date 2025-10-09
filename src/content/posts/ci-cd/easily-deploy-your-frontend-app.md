@@ -16,7 +16,8 @@ I bought my domain name on Porkbun. Once you know which tool you will use for de
 ### Vercel is fire
 
 Super fast with no code.
-vercel.com/new will allow you to:
+
+[vercel.com/new](https://vercel.com/new) will allow you to:
 
 1. create an account
 2. import your git repo : very few information is necessary about the repo
@@ -24,8 +25,9 @@ vercel.com/new will allow you to:
 4. Vercel watches for changes on the repo and updates the website whenever you push to `main`
 5. when you create a new branch, Vercel automatically creates a "preview" version of your app with the branch content. This is absolute fire. It's so easy to share your work and test before merging to `main`. When you create a Pull request in Github, the Vercel bot writes a comment with your preview link for this branch. And this, with absolutely no configuration. I decided to keep Vercel for my development workflow.
 6. you can easily add a specific domain name for a specific environment
-   ... but I rather chose to try Github Pages and connect my domain name to this deployment
-   Vercel is super cool to deploy as fast as lightspeed, but I wanted to train on tools that I had already had to use in production environment at big scale. So I wrote some GitHub Actions and chose to deploy to Github Pages.
+   ... but I rather chose to try Github Pages and connect my domain name to this deployment.
+
+Vercel is super cool to deploy as fast as lightspeed, but I wanted to train on tools that I had already had to use in production environment at big scale. So I wrote some GitHub Actions and chose to deploy to Github Pages.
 
 ### GitHub Actions gives you more options to customize the deployment
 
