@@ -1,0 +1,25 @@
+---
+import { getCollection } from "astro:content";
+import Blog from "../../components/blog/index.astro";
+
+const title = "architecture";
+const description = "Latest articles.";
+const permalink = `${Astro.site!.href}architecture`;
+const current = "architecture";
+
+let allPosts = await getCollection("architecturePosts");
+allPosts = allPosts.sort(
+  (a, b) =>
+    new Date(b.data.publishDate).valueOf() -
+    new Date(a.data.publishDate).valueOf()
+);
+---
+
+<Blog
+  pageTitle="Architecture"
+  title={title}
+  description={description}
+  permalink={permalink}
+  current={current}
+  posts={allPosts}
+/>
