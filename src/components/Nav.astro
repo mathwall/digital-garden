@@ -110,6 +110,15 @@ const { current = "" } = Astro.props;
       border-radius: 15px 15px 0px 0px;
       background-color: var(--text-secondary);
     }
+    .navbar-line::before {
+      content: "MENU";
+      position: absolute;
+      left: calc(50vw);
+      bottom: 12px;
+      transform: translate(-50%, 0);
+      color: var(--background-body);
+      font-size: smaller;
+    }
     .navbar-line::after {
       content: "";
       position: absolute;

@@ -20,7 +20,7 @@ Satisfy
 }
 
 @font-face {
-  font-family: "Ubuntu";
+  font-family: "Ubuntu Regular";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -31,7 +31,7 @@ Satisfy
 }
 
 @font-face {
-  font-family: "Ubuntu";
+  font-family: "Ubuntu Medium";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
