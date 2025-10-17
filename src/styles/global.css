@@ -4,7 +4,7 @@
   --text-secondary: #8d9263;
   --primary-color: #83b4c3;
   --font-family-serif: "Cedarville Cursive", serif;
-  --font-family-sans: "Ubuntu", sans-serif;
+  --font-family-sans: "Ubuntu Regular", sans-serif;
 }
 
 :root.theme-dark {
