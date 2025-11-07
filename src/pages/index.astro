@@ -10,20 +10,34 @@ const permalink = Astro.site!.href;
   <div class="home-container">
     <div class="home-copy">
       <h1>Hi, I'm Mathilde!</h1>
-      <p>
-        And this is my digital garden. <br />
-        I created it for personal use, to have fun while learning and be able to
-        consult my notes from anywhere. It's a collection of very short articles
-        about programming. Feel free to read it and play with it!
-      </p>
-      <p>
-        I built this website with <a href="https://astro.build/">Astro</a>.
-        <br />
-        Astro allows you to create fast web applications thanks to its island architecture:
-        it renders HTML and only sends Javascript components to the browser when
-        necessary. It's like going back to pure HTML/CSS/JQuery websites but with
-        the comfort of a structured codebase like in modern JS Frameworks.
-      </p>
+      <div class="section">
+        <p>
+          🌶️🌱🐝
+          <br />
+          Welcome to my digital garden!<br />A place where I collect concise
+          notes and experiments.
+          <br />
+          🫜🍄‍🟫🫛
+        </p>
+      </div>
+      <div class="section">
+        <p>I built this site for two purposes:</p>
+        <ul>
+          <li>to access my programming notes from anywhere</li>
+          <li>to experiment with CSS for fun</li>
+        </ul>
+        <p>I write concise articles that get straight to the point.</p>
+      </div>
+      <div class="section">
+        <p>
+          I built this website with <a href="https://astro.build/">Astro</a>.
+          <br />
+          Astro helps create fast web applications thanks to its <a
+            href="/architecture/islands-architecture">Islands architecture</a
+          >: it renders HTML and only sends JavaScript for interactive
+          components when needed.
+        </p>
+      </div>
     </div>
   </div>
 
@@ -36,17 +50,38 @@ const permalink = Astro.site!.href;
 
     .home-copy {
       flex: 1;
-      padding: 0 1em;
+      padding: 0 24em;
     }
 
     .home-copy h1 {
       font-weight: 700;
-      margin-bottom: 0.5em;
+      margin-bottom: 1em;
       line-height: 1.3;
+      text-align: center;
+      position: relative;
+    }
+
+    .home-copy h1::before {
+      content: "";
+      position: absolute;
+      transform: translateY(0.5em);
+      left: 30%;
+      bottom: 0;
+      width: 40%;
+      height: 4px;
+      background: var(--text-secondary);
     }
 
     .home-copy p {
       font-size: 1.4em;
+    }
+
+    .home-copy .section:first-of-type {
+      text-align: center;
+    }
+
+    .home-copy .section {
+      margin-bottom: 2em;
     }
 
     @media (max-width: 1200px) {
@@ -62,7 +97,7 @@ const permalink = Astro.site!.href;
 
       .home-copy {
         flex: 0;
-        padding-bottom: 2em;
+        padding: 0 1em 2em 1em;
         text-align: center;
       }
     }
