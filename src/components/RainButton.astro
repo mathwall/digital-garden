@@ -5,21 +5,26 @@ import Umbrella from "./icons/Umbrella.astro";
 <script>
   import { range, random } from "lodash";
 
+  const RAIN_DROPS_MAX_SIZE: number = 6;
+
   const createDrop = (container: Element): HTMLDivElement => {
     const rainDrop = document.createElement("div");
-    const dropSize = random(2, 5);
+    // we remove 2px from the width and add 2px to the height of the drop to make it more beautiful
+    const dropWidth = random(2, RAIN_DROPS_MAX_SIZE - 2);
     const dropDuration = random(500, 1000);
 
+    // we remove 2px from the width and add 2px to the height of the drop to make it more beautiful
     rainDrop.style = `
-        width: ${dropSize}px;
-        height: ${dropSize + 2}px;
+        height: ${dropWidth + 2}px;
+        width: ${dropWidth}px;
         position: absolute;
         top: 0%;
         left: ${random(0, 100)}%;
+        transform: translate(-50%, -50%);
         background: linear-gradient(135deg, rgba(131, 180, 195, 0.5), rgba(131, 180, 195, 1));
         border-radius: 50%;
         animation: fall ${dropDuration}ms linear infinite;
-      `;
+        `;
 
     container.appendChild(rainDrop);
     return rainDrop;
@@ -30,7 +35,9 @@ import Umbrella from "./icons/Umbrella.astro";
     let rainDropsInterval: NodeJS.Timeout;
 
     const startRain = () => {
-      const particlesContainer = document.querySelector("body");
+      const particlesContainer = document.querySelector(
+        "#weather-animations-container"
+      );
       if (!particlesContainer) return;
 
       rainDropsInterval = setInterval(() => {
@@ -52,15 +59,17 @@ import Umbrella from "./icons/Umbrella.astro";
     };
 
     rainButton.addEventListener("mousedown", () => {
-      // TODO understand why the mouse down event is not fired as soon as we switch tab
-      console.log("mouse down on rain button");
       startRain();
     });
 
-    rainButton.addEventListener("touchstart", startRain);
+    // desktop
     rainButton.addEventListener("mouseup", clearRain);
     rainButton.addEventListener("mouseout", clearRain);
+
+    // mobile
+    rainButton.addEventListener("touchstart", startRain);
     rainButton.addEventListener("touchend", clearRain);
+    rainButton.addEventListener("touchcancel", clearRain);
   };
 
   const rainButton = document.querySelector(".make-it-rain");
@@ -74,6 +83,15 @@ import Umbrella from "./icons/Umbrella.astro";
     to {
       transform: translateY(100vh);
     }
+  }
+
+  /* This container prevents the drops from overflowing the body: 
+  it has an inset of half the drops max size, and the drops are translated by 50%
+  so that their position is based on their center point rather than their top-left corner */
+  #weather-animations-container {
+    position: absolute;
+    /* corresponds to the half the RAIN_DROPS_MAX_SIZE */
+    inset: 3px;
   }
 
   .make-it-rain {
