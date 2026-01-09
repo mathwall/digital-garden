@@ -1,6 +1,17 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+const jsPosts = defineCollection({
+  // Load Markdown and MDX files in the `src/content/posts/js` directory.
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts/js" }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    publishDate: z.union([z.string(), z.date()]),
+    description: z.string(),
+  }),
+});
+
 const cssPosts = defineCollection({
   // Load Markdown and MDX files in the `src/content/posts/css` directory.
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts/css" }),
@@ -37,4 +48,4 @@ const architecturePosts = defineCollection({
   }),
 });
 
-export const collections = { cssPosts, cicdPosts, architecturePosts };
+export const collections = { jsPosts, cssPosts, cicdPosts, architecturePosts };
