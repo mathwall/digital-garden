@@ -18,10 +18,15 @@ const socialUrl = Astro.site!.href + "assets/social.png";
 <link rel="icon" type="image/x-icon" href="/assets/plant.svg" />
 
 <!-- Analytics -->
-<script
-  defer
-  src="https://cloud.umami.is/script.js"
-  data-website-id="1a51ea11-ee8b-4261-a6b8-dbc60dedbd8a"></script>
+{
+  import.meta.env.PROD && (
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="1a51ea11-ee8b-4261-a6b8-dbc60dedbd8a"
+    />
+  )
+}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
