@@ -5,6 +5,12 @@ publishDate: 7 Nov 2025
 description: Not an architecture designed by someone working from an archipelago
 ---
 
+I built this website with [Astro](https://astro.build/).
+
+Astro helps create fast web applications thanks to its Islands architecture: it renders HTML and only sends JavaScript for interactive components when needed. This article is a quick summary about this type of architecture.
+
+## What is the idea of Islands architecture?
+
 The term “component island” was coined by Etsy’s frontend architect Katie Sylor-Miller in 2019.
 The idea was later expanded and documented by Preact creator Jason Miller in 2020.
 
@@ -27,4 +33,4 @@ _Different approach:_ in Islands architecture, the composition is achieved using
 
 With progressive hydration, you make sure individual widgets on a page are loaded and initialized over time. This reduces initial load cost.
 
-Islands architecture takes this further: each individual region of the page can be loaded in parallel and become interactive idenpendently, without relying on a top-down initialization. A performance issue in one island won't necessarily block other islands from becoming interactive.
+Islands architecture takes this further: each individual region of the page can be loaded in parallel and become interactive independently, without relying on a top-down initialization. A performance issue in one island won't necessarily block other islands from becoming interactive.
