@@ -5,13 +5,13 @@ import Umbrella from "./icons/Umbrella.astro";
 <script>
   import { range, random } from "lodash";
 
-  const RAIN_DROPS_MAX_SIZE: number = 6;
+  const RAIN_DROPS_MAX_SIZE: number = 5;
 
   const createDrop = (container: Element): HTMLDivElement => {
     const rainDrop = document.createElement("div");
     // we remove 2px from the width and add 2px to the height of the drop to make it more beautiful
     const dropWidth = random(2, RAIN_DROPS_MAX_SIZE - 2);
-    const dropDuration = random(500, 1000);
+    const dropDuration = random(100, 500);
 
     // we remove 2px from the width and add 2px to the height of the drop to make it more beautiful
     rainDrop.style = `
@@ -21,7 +21,7 @@ import Umbrella from "./icons/Umbrella.astro";
         top: 0%;
         left: ${random(0, 100)}%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, rgba(131, 180, 195, 0.5), rgba(131, 180, 195, 1));
+        background: rgba(131, 180, 195);
         border-radius: 50%;
         animation: fall ${dropDuration}ms linear infinite;
         `;
@@ -34,20 +34,41 @@ import Umbrella from "./icons/Umbrella.astro";
     const rainDrops: HTMLDivElement[] = [];
     let rainDropsInterval: NodeJS.Timeout;
 
+    const getIsRaining = () => {
+      return (
+        typeof localStorage !== "undefined" &&
+        localStorage.getItem("rain") === "true"
+      );
+    };
+
+    const setIsRaining = (value: boolean) => {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("rain", value ? "true" : "false");
+      }
+    };
+
     const startRain = () => {
       const particlesContainer = document.querySelector(
         "#weather-animations-container"
-      );
+      ) as HTMLElement;
       if (!particlesContainer) return;
 
+      // Use the document's total scrollable height for the rain fall distance
+      const fallDistance = document.documentElement.scrollHeight;
+      particlesContainer.style.setProperty(
+        "--fall-distance",
+        `${fallDistance}px`
+      );
+
       rainDropsInterval = setInterval(() => {
-        if (rainDrops.length < 700) {
+        if (rainDrops.length < 1000) {
           range(15).forEach(() => {
             const rainDrop = createDrop(particlesContainer);
             rainDrops.push(rainDrop);
           });
         }
       }, 100);
+      setIsRaining(true);
     };
 
     const clearRain = () => {
@@ -56,20 +77,32 @@ import Umbrella from "./icons/Umbrella.astro";
         rainDrop.remove();
       });
       rainDrops.splice(0, rainDrops.length);
+      setIsRaining(false);
     };
 
-    rainButton.addEventListener("mousedown", () => {
-      startRain();
+    // desktop
+    rainButton.addEventListener("click", () => {
+      if (getIsRaining()) {
+        clearRain();
+      } else {
+        startRain();
+      }
     });
 
-    // desktop
-    rainButton.addEventListener("mouseup", clearRain);
-    rainButton.addEventListener("mouseout", clearRain);
-
     // mobile
-    rainButton.addEventListener("touchstart", startRain);
-    rainButton.addEventListener("touchend", clearRain);
-    rainButton.addEventListener("touchcancel", clearRain);
+    rainButton.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      if (getIsRaining()) {
+        clearRain();
+      } else {
+        startRain();
+      }
+    });
+
+    // keep raining on page change
+    if (getIsRaining()) {
+      startRain();
+    }
   };
 
   const rainButton = document.querySelector(".make-it-rain");
@@ -81,17 +114,8 @@ import Umbrella from "./icons/Umbrella.astro";
 <style>
   @keyframes fall {
     to {
-      transform: translateY(100vh);
+      transform: translateY(var(--fall-distance, 100vh));
     }
-  }
-
-  /* This container prevents the drops from overflowing the body: 
-  it has an inset of half the drops max size, and the drops are translated by 50%
-  so that their position is based on their center point rather than their top-left corner */
-  #weather-animations-container {
-    position: absolute;
-    /* corresponds to the half the RAIN_DROPS_MAX_SIZE */
-    inset: 3px;
   }
 
   .make-it-rain {
@@ -100,6 +124,6 @@ import Umbrella from "./icons/Umbrella.astro";
   }
 </style>
 
-<button>
-  <div class="make-it-rain"><Umbrella /></div>
+<button class="make-it-rain">
+  <Umbrella />
 </button>
