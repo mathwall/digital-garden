@@ -9,10 +9,15 @@ const permalink = Astro.site!.href;
 <BaseLayout title={title} description={description} permalink={permalink}>
   <div class="home-container">
     <div class="home-copy">
-      <h1>Hi, I'm Mathilde!</h1>
+      <div class="presentation">
+        <img src="/assets/zoomed-smiling-avatar.svg" alt="Mathilde Sauvage" />
+        <div class="text">
+          <h1>Hi, I'm Mathilde!</h1>
+        </div>
+      </div>
       <div class="section">
         <p>
-          🌶️🌱🐝
+          🌶️🌱🫐
           <br />
           Welcome to my digital garden!<br />A place where I collect concise
           notes and experiments.
@@ -27,15 +32,9 @@ const permalink = Astro.site!.href;
           <li>to experiment with CSS for fun</li>
         </ul>
         <p>I write concise articles that get straight to the point.</p>
-      </div>
-      <div class="section">
         <p>
-          I built this website with <a href="https://astro.build/">Astro</a>.
-          <br />
-          Astro helps create fast web applications thanks to its <a
-            href="/architecture/islands-architecture">Islands architecture</a
-          >: it renders HTML and only sends JavaScript for interactive
-          components when needed.
+          As I am a full-stack software engineer, you will find content about
+          diverse subjects, from pure CSS to micro-services.
         </p>
       </div>
     </div>
@@ -53,35 +52,67 @@ const permalink = Astro.site!.href;
       padding: 0 24em;
     }
 
-    .home-copy h1 {
-      font-weight: 700;
-      margin-bottom: 1em;
-      line-height: 1.3;
-      text-align: center;
-      position: relative;
-    }
-
-    .home-copy h1::before {
-      content: "";
-      position: absolute;
-      transform: translateY(0.5em);
-      left: 30%;
-      bottom: 0;
-      width: 40%;
-      height: 4px;
-      background: var(--text-secondary);
-    }
-
     .home-copy p {
       font-size: 1.4em;
     }
 
-    .home-copy .section:first-of-type {
+    /* By default, center all sections of text */
+    .home-copy > .section {
       text-align: center;
+    }
+
+    /* Set all sections but the first one to left-align 
+    -> this keeps text-align center for the first section only */
+    .home-copy > .section ~ .section {
+      text-align: left;
     }
 
     .home-copy .section {
       margin-bottom: 2em;
+    }
+
+    .presentation:hover {
+      cursor:
+        url('data:image/svg+xml;utf8,<svg width="40" height="48" viewBox= "0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="fill:black;font-size:48px;"><text y="50%">🐝</text></svg>'),
+        auto;
+    }
+
+    .presentation {
+      display: flex;
+      align-items: stretch;
+      margin-top: 2em;
+      margin-bottom: 4em;
+      /* needed for the ::before element */
+      position: relative;
+    }
+
+    .presentation::before {
+      content: "";
+      position: absolute;
+      transform: translateY(0.5em);
+      left: 30%;
+      bottom: -2em;
+      width: 40%;
+      height: 3px;
+      background: var(--text-secondary);
+    }
+
+    .presentation img {
+      max-width: 33%;
+      border-radius: 80px 0 0 80px;
+    }
+
+    .presentation .text {
+      border-right: solid 2px var(--text-secondary);
+      border-radius: 0 80px 80px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .presentation h1 {
+      font-weight: 700;
+      margin: 0;
+      padding-right: 1em;
     }
 
     @media (max-width: 1200px) {
