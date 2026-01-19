@@ -57,4 +57,15 @@ const { title, description, permalink, current } = Astro.props;
   body {
     position: relative;
   }
+
+  /* Useful for rain functionnality */
+  #weather-animations-container {
+    position: absolute;
+    /* This prevents the drops from overflowing the body: 
+    it has an inset of half the drops max size, and the drops are translated by 50%
+    so that their position is based on their center point rather than their top-left corner */
+    inset: 3px;
+    pointer-events: none;
+    z-index: 1;
+  }
 </style>
