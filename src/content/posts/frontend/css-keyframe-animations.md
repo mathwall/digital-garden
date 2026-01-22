@@ -1,8 +1,8 @@
 ---
 title: Create cool animations with keyframes!
-slug: keyframe-animations
+slug: css-keyframe-animations
 publishDate: 29 Sept 2025
-description: How to use keyframe animations
+description: How to use CSS keyframe animations
 ---
 
 ## Basic syntax for keyframe animations

@@ -12,9 +12,12 @@ const jsPosts = defineCollection({
   }),
 });
 
-const cssPosts = defineCollection({
-  // Load Markdown and MDX files in the `src/content/posts/css` directory.
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts/css" }),
+const frontendPosts = defineCollection({
+  // Load Markdown and MDX files in the `src/content/posts/frontend` directory.
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/posts/frontend",
+  }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
@@ -48,4 +51,9 @@ const architecturePosts = defineCollection({
   }),
 });
 
-export const collections = { jsPosts, cssPosts, cicdPosts, architecturePosts };
+export const collections = {
+  jsPosts,
+  frontendPosts,
+  cicdPosts,
+  architecturePosts,
+};
