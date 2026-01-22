@@ -1,0 +1,111 @@
+---
+title: svg for dummies
+slug: svg-basics
+publishDate: 19 Jan 2026
+description: The very basics of SVG
+---
+
+# What is svg?
+
+Scalable Vector Graphics is a graphics language based on XML (like HTML). It allows you to create images.
+The first public draft of SVG was released by the World Wide Web consortium in 1999.
+
+# Why is it cool?
+
+## It is scalable
+
+As the name suggests, it means that SVG can be scaled to fit the resolution of different display devices without pixelation, unlike bitmap-based image formats.
+
+## It can be interactive
+
+Since HTML5, you can write inline SVG directly inside an HTML file. This allows you to style it with CSS and animate it with pure CSS or JavaScript.
+
+## It is lightweight
+
+Compared to other conventional image formats like JPEG, GIF, and PNG, SVG files are much smaller. Moreover, the graphics are constructed by the browser itself, which reduces server load and network response time typically associated with web imagery.
+
+# How to write an svg?
+
+## SVG tag properties
+
+### width / height
+
+`width` and `height` properties define how much space the svg image takes up in the browser.
+
+Without further properties, the coordinate system for the image is derived from these two values: coordinates range from `0,0` (top-left corner) to `width, height` (bottom-right corner).
+
+It is set in pixels by default.
+
+### viewBox
+
+The `viewBox` property takes 4 numbers :
+
+- the first 2 numbers define the position of the top-left corner
+- the last 2 numbers define the image's inner size from the image element's perspective.
+
+It is useful to move the origin of the coordinate system, like this:
+`viewBox="0 0 200 200"` defines a 200x200 grid with origin at the top-left corner
+`viewBox="-100 -100 200 200"` defines a 200x200 grid with origin in the center of the image, the top-left corner being at `-100, -100`.
+
+The image elements will position themselves compared to the origin.
+
+This property is also useful to scale the image: if the last 2 numbers of the `viewBox` property match the `width` and `height`,
+1 unit in the grid will equal to 1px on the screen.
+But if they don't match, the image elements will scale up or down.
+
+For example, if we write:
+
+```
+<svg
+  width="200"
+  height="200"
+  viewBox="0 0 100 100"
+  style="background-color: white"
+>
+  <rect
+    x="0"
+    y="0"
+    width="20"
+    height="20"
+  />
+</svg>
+```
+
+We get a 40×40px rectangle: the rectangle will be `20×20` units of `200px/100 units`.
+
+<svg
+  width="200"
+  height="200"
+  viewBox="0 0 100 100"
+  style="background-color: white"
+>
+  <rect x="0" y="0" width="20" height="20" fill="black" />
+</svg>
+
+With `viewBox="0 0 200 200"`, we get a 20\*20px rectangle instead:
+
+<svg
+  width="200"
+  height="200"
+  viewBox="0 0 200 200"
+  style="background-color: white"
+>
+  <rect x="0" y="0" width="20" height="20" fill="black" />
+</svg>
+
+### xmlns (XML namespace)
+
+The `xmlns` attribute tells the browser: "This is SVG, not some other XML format."
+
+If you write SVG inside HTML, this attribute is not needed because browsers automatically recognize `<svg>` tags.
+In any other case, it's recommended to include it.
+
+`<svg xmlns="http://www.w3.org/2000/svg"></svg>`
+
+The URL (`http://www.w3.org/2000/svg`) is just a unique identifier—it's not actually visited. It's used because URLs are guaranteed to be unique across the internet, making them perfect for namespacing.
+
+## Learn more
+
+Now that you know what is svg and how to create one, you can start learning about how to draw shapes in it: here is [my cheatsheet](/frontend/svg-shapes).
+
+If you want to play with svgs, this is a great tutorial : https://svg-tutorial.com/

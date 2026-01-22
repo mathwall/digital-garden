@@ -1,0 +1,135 @@
+---
+title: How to draw basic shapes in svg
+slug: svg-shapes
+publishDate: 20 Jan 2026
+description: A cheatsheet of the svg shapes
+---
+
+In [a previous article](/frontend/svg-basics), we saw how to write a basic svg. Let's now see how to fill it with basic shapes!
+
+## Nice-to-know things about svg elements
+
+By default, all elements are filled with black.
+
+If you want to change that, you can set the `fill` property to a color name like `red`, an hex color like `#ff0000`, a CSS function like `rgb(255 0 0)` or to `none`.
+
+You can also draw a stroke with `stroke` (for the color) and `stroke-width`.
+
+You can group several basic shapes with the `<g>` element.
+
+## SVG shapes
+
+### circle
+
+It is defined by its center position with `cx` and `cy`, then its radius with `r`.
+
+```
+<svg width="200" height="200" viewBox="-100 -100 200 200">
+  <circle cx="0" cy="0" r="20" fill="orange" />
+</svg>
+```
+
+<svg
+  width="200"
+  height="200"
+  viewBox="-100 -100 200 200"
+  style="background-color: white"
+>
+  <circle cx="0" cy="0" r="20" fill="orange" />
+</svg>
+
+### rect
+
+It is defined with `x` and `y` for the position of the top-left corner, then `width` and `height`.
+
+`rx` will make the edges of the rectangle rounded (similar to `border-radius` for HTML elements)
+`ry` can be set to set a different radius on the Y axis. If not set, it falls back to the previous one.
+
+### polygon
+
+It has a `points` property that sets a list of coordinates that are connected with straight lines.
+
+### line
+
+It is drawn from `x1`/`y1` to `x2`/`y2`.
+
+`stroke-linecap: round` can make the line caps rounded.
+
+### polyline
+
+The difference with a polygon is that a polygon closes itself, while a polyline stays open.
+
+### path
+
+It can define pretty much everything.
+
+The shape is defined by the `d` attribute that lists drawing commands.
+A command always starts with a letter defining its type, and ends with a coordinate. A command alwats continues the previous command.
+
+`M` = `move-to`, moves the cursor to a point without drawing a line
+`L` = `line-to`, draws a straight line from the previous point
+`Z` closes the path by drawing a straight line from the current point to the starting point
+
+Example: draw a burger icon
+
+```
+<svg
+  width="200"
+  height="200"
+  viewBox="-100 -100 200 200"
+  style="background-color: white"
+>
+  <path
+    d="
+        M -45 -45
+        L  45 -45
+        M -45   0
+        L  45   0
+        M -45  45
+        L  45  45"
+    stroke="#333333"
+    stroke-width="15"
+    stroke-linecap="round"
+  />
+</svg>
+```
+
+<svg
+  width="200"
+  height="200"
+  viewBox="-100 -100 200 200"
+  style="background-color: white"
+>
+  <path
+    d="
+        M -45 -45
+        L  45 -45
+        M -45   0
+        L  45   0
+        M -45  45
+        L  45  45"
+    stroke="#333333"
+    stroke-width="15"
+    stroke-linecap="round"
+  />
+</svg>
+
+You can also draw curves with the `path` element.
+
+#### Quadratic curves
+
+The quadratic Bezier curve needs a control point apart from the endpoint: it is an invisible coordinate to which the line is bending.
+To draw a quadratic curve, use the `Q` command: it indicates the control point, then the endpoint like this: `Q xControlPoint yControlPoint xEnd yEnd`.
+
+See this link for more detail and examples: https://svg-tutorial.com/svg/quadratic-bezier.
+
+#### Cubic curves
+
+Cubic Bezier curves have 2 control points: one that defines the curve's initial direction, and one that sets how the curve should reach its endpoint.
+Use the `C` command to draw a cubic curve like this: `C x1ControlPoint y1ControlPoint x2ControlPoint y2ControlPoint xEnd yEnd`
+
+See this link for more detail and examples: https://svg-tutorial.com/svg/cubic-bezier.
+
+### ellipse
+
+`ellipse` behaves like a circle, except it has 2 radiuses: a horizontal one `rx` and a vertical one `ry`.
