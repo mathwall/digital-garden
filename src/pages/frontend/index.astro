@@ -2,12 +2,12 @@
 import { getCollection } from "astro:content";
 import Blog from "../../components/blog/index.astro";
 
-const title = "CSS";
+const title = "Frontend";
 const description = "Latest articles.";
-const permalink = `${Astro.site!.href}css`;
-const current = "css";
+const permalink = `${Astro.site!.href}frontend`;
+const current = "frontend";
 
-let allPosts = await getCollection("cssPosts");
+let allPosts = await getCollection("frontendPosts");
 allPosts = allPosts.sort(
   (a, b) =>
     new Date(b.data.publishDate).valueOf() -
@@ -16,7 +16,7 @@ allPosts = allPosts.sort(
 ---
 
 <Blog
-  pageTitle="Cascading Style Sheets"
+  pageTitle="Frontend"
   title={title}
   description={description}
   permalink={permalink}

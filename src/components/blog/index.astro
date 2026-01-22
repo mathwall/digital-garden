@@ -12,9 +12,9 @@ export interface Props {
   posts: {
     id: string;
     body?: string;
-    collection: "jsPosts" | "cicdPosts" | "cssPosts" | "architecturePosts";
+    collection: "jsPosts" | "cicdPosts" | "frontendPosts" | "architecturePosts";
     data: InferEntrySchema<
-      "jsPosts" | "cicdPosts" | "cssPosts" | "architecturePosts"
+      "jsPosts" | "cicdPosts" | "frontendPosts" | "architecturePosts"
     >;
     rendered?: RenderedContent;
     filePath?: string;

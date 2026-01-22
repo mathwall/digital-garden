@@ -25,7 +25,9 @@ const { current = "" } = Astro.props;
   <a class={current === "" ? "selected" : ""} href="/">home</a>
   <!-- temporarily remove since it's an empty page -->
   <!-- <a class={current === "about" ? "selected" : ""} href="/about">about</a> -->
-  <a class={current === "css" ? "selected" : ""} href="/css">CSS</a>
+  <a class={current === "frontend" ? "selected" : ""} href="/frontend"
+    >Frontend</a
+  >
   <a class={current === "js" ? "selected" : ""} href="/js">JS</a>
   <a class={current === "ci-cd" ? "selected" : ""} href="/ci-cd">CI/CD</a>
   <a class={current === "architecture" ? "selected" : ""} href="/architecture"
