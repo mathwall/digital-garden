@@ -6,7 +6,15 @@
  * "Also in the shed" (pills), and the preferences (theme, rain).
  *
  * Phone: the sheet opens full width under the bar. Desktop (960px+): a 400px
- * panel on the right, under the button.
+ * panel on the right, under the button. The sheet scrolls on its own when it
+ * is taller than the viewport (the bar is sticky, so the page can't reveal it).
+ *
+ * Sticky on both breakpoints: it slides up out of view when scrolling down
+ * and back when scrolling up (8px threshold), stays while within its own
+ * height of the top, while the menu is open, or while it holds keyboard
+ * focus. `data-floating` (scrolled at all) adds `shadow-lift`; `data-tucked`
+ * slides it away. `scroll-padding-top` on `html` (global.css) keeps anchor
+ * and skip-link targets below it.
  *
  * Disclosure pattern: the button has `aria-expanded` / `aria-controls`; the
  * menu is `display: none` while closed, so it is out of the tab order. It
@@ -178,12 +186,79 @@ const pills = [
         setOpen(false);
       }
     });
+
+    // ---------- Hide on scroll down, show on scroll up ----------
+    const THRESHOLD = 8;
+    let height = header.offsetHeight;
+    let lastY = Math.max(window.scrollY, 0);
+    let ticking = false;
+
+    const setFlag = (name: "floating" | "tucked", on: boolean) => {
+      if ((header.dataset[name] === "true") !== on) header.dataset[name] = String(on);
+    };
+
+    // Keyboard focus only: a mouse click leaves focus on the burger, which
+    // shouldn't pin the bar for the rest of the page.
+    const hasKeyboardFocus = () => {
+      try {
+        return header.querySelector(":focus-visible") !== null;
+      } catch {
+        return header.contains(document.activeElement);
+      }
+    };
+
+    // Runs once per frame at most. Reads first, then writes: no layout thrash.
+    const update = () => {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      // Clamp iOS rubber-banding (negative at the top, past the end at the bottom)
+      const y = Math.min(Math.max(window.scrollY, 0), Math.max(max, 0));
+      const pinned = isOpen() || hasKeyboardFocus();
+
+      setFlag("floating", y > 0);
+
+      // Near the top the bar is (partly) in its own place: always show it.
+      if (y <= height) {
+        setFlag("tucked", false);
+        lastY = y;
+        return;
+      }
+
+      const delta = y - lastY;
+      if (Math.abs(delta) < THRESHOLD) return; // small moves add up until 8px
+      setFlag("tucked", delta > 0 && !pinned);
+      lastY = y;
+    };
+
+    const requestUpdate = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener(
+      "resize",
+      () => {
+        height = header.offsetHeight;
+        requestUpdate();
+      },
+      { passive: true },
+    );
+
+    // Tabbing back into a tucked bar brings it back.
+    header.addEventListener("focusin", () => setFlag("tucked", false));
+
+    // A page restored mid-scroll (reload, back) gets its shadow right away.
+    update();
   }
 </script>
 
 <style>
   .header {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 20; /* over the page, under the rain (50) and the skip link */
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -193,6 +268,26 @@ const pills = [
     border-bottom: 1px solid var(--rule);
     background: var(--paper);
     box-sizing: border-box;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  /* Floating over the content: the one soft lift */
+  .header[data-floating="true"] {
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Slid out of view (no shadow, or it would peek under the top edge) */
+  .header[data-tucked="true"] {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header {
+      transition: none;
+    }
   }
 
   /* ---------- Brand ---------- */
@@ -296,6 +391,10 @@ const pills = [
     left: 0;
     right: 0;
     z-index: 10;
+    max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 20px var(--space-4) var(--space-5);
     background: var(--paper-raised);
     box-shadow: var(--shadow-lift);

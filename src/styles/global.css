@@ -20,6 +20,8 @@ html {
   background: var(--paper);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* The header is sticky: anchor, skip-link and focus jumps land below it */
+  scroll-padding-top: var(--header-height);
 }
 
 @supports (scrollbar-gutter: stable) {
