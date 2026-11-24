@@ -1,8 +1,10 @@
 ---
 /**
- * Interface line icons (burger, close, chevron, arrow, rain cloud, umbrellas),
- * stroked in `currentColor`. Paths copied verbatim from the design system
- * component previews (SiteHeader, TopicList, NoteCard, RainSwitch).
+ * Interface line icons (burger, close, chevrons, arrow, sliders, rain cloud,
+ * umbrellas), stroked in `currentColor`. Paths copied verbatim from the
+ * design system component previews (SiteHeader, TopicList, NoteCard,
+ * RainSwitch) and the desktop mockups (sliders: the preferences button,
+ * drawn at stroke 1.6; chevron-left: the note's back link).
  *
  * Default stroke 1.8, as `.mg-ic` in `bundle.css`; a parent's CSS
  * `stroke-width` overrides the `strokeWidth` attribute.
@@ -16,7 +18,9 @@ const ICON_NAMES = [
   "burger",
   "close",
   "chevron",
+  "chevron-left",
   "arrow-up-right",
+  "sliders",
   "rain-cloud",
   "umbrella-open",
   "umbrella-closed",
@@ -50,7 +54,17 @@ const viewBox = name === "umbrella-open" ? "0 0 32 32" : "0 0 24 24";
   {name === "burger" && <path d="M4 7h16M4 12h16M4 17h16" />}
   {name === "close" && <path d="M6 6l12 12M18 6L6 18" />}
   {name === "chevron" && <path d="M9 6l6 6-6 6" />}
+  {name === "chevron-left" && <path d="M15 6l-6 6 6 6" />}
   {name === "arrow-up-right" && <path d="M7 17L17 7M9 7h8v8" />}
+  {
+    name === "sliders" && (
+      <>
+        <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+        <circle cx="15" cy="7" r="2" />
+        <circle cx="9" cy="17" r="2" />
+      </>
+    )
+  }
   {
     name === "rain-cloud" && (
       <>
