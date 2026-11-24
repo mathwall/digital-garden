@@ -1,136 +1,148 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import NoteCardList from "../components/NoteCardList.astro";
+import SignOff from "../components/SignOff.astro";
+import TopicList from "../components/TopicList.astro";
+import Vegetable from "../components/icons/Vegetable.astro";
+import { getNotes } from "../lib/notes";
 
 const title = "Home";
 const description = "Mathilde's digital garden homepage";
 const permalink = Astro.site!.href;
+
+const latestNotes = (await getNotes()).slice(0, 4);
 ---
 
 <BaseLayout title={title} description={description} permalink={permalink}>
-  <div class="home-container">
-    <div class="home-copy">
-      <div class="presentation">
-        <img src="/assets/zoomed-smiling-avatar.svg" alt="Mathilde Sauvage" />
-        <div class="text">
-          <h1>Hi, I'm Mathilde!</h1>
-        </div>
+  <div class="home">
+    <section class="intro" aria-labelledby="welcome">
+      <h1 class="greeting" id="welcome">Welcome</h1>
+      <p class="intro-text">
+        This is my digital garden, where I collect concise notes and
+        experiments, from pure CSS to microservices.
+      </p>
+    </section>
+
+    <section class="fresh" aria-labelledby="fresh-heading">
+      <p class="label">From the notebook</p>
+      <div class="sechead">
+        <h2 id="fresh-heading">Freshly planted</h2>
+        <a class="link all-notes" href="/notes">All notes</a>
       </div>
-      <div class="section">
-        <p>
-          🌶️🌱🫐
-          <br />
-          Welcome to my digital garden!<br />A place where I collect concise
-          notes and experiments.
-          <br />
-          🫜🍄‍🟫🫛
-        </p>
-      </div>
-      <div class="section">
-        <p>I built this site for two purposes:</p>
-        <ul>
-          <li>to access my programming notes from anywhere</li>
-          <li>to experiment with CSS for fun</li>
-        </ul>
-        <p>I write concise articles that get straight to the point.</p>
-        <p>
-          As I am a full-stack software engineer, you will find content about
-          diverse subjects, from pure CSS to micro-services.
-        </p>
-      </div>
+      <NoteCardList notes={latestNotes} />
+    </section>
+
+    <div class="ornament" aria-hidden="true">
+      <Vegetable name="pea-pod" size={34} strokeWidth={1.5} />
     </div>
+
+    <section class="wander" aria-labelledby="wander-heading">
+      <div class="wander-head">
+        <p class="label">The garden</p>
+        <h2 id="wander-heading">Wander by topic</h2>
+      </div>
+      <TopicList />
+    </section>
+
+    <SignOff />
   </div>
-
-  <style>
-    .home-container {
-      position: relative;
-      margin: 2em 0;
-      min-height: 400px;
-    }
-
-    .home-copy {
-      flex: 1;
-      padding: 0 24em;
-    }
-
-    .home-copy p {
-      font-size: 1.4em;
-    }
-
-    /* By default, center all sections of text */
-    .home-copy > .section {
-      text-align: center;
-    }
-
-    /* Set all sections but the first one to left-align 
-    -> this keeps text-align center for the first section only */
-    .home-copy > .section ~ .section {
-      text-align: left;
-    }
-
-    .home-copy .section {
-      margin-bottom: 2em;
-    }
-
-    .presentation:hover {
-      cursor:
-        url('data:image/svg+xml;utf8,<svg width="40" height="48" viewBox= "0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="fill:black;font-size:48px;"><text y="50%">🐝</text></svg>'),
-        auto;
-    }
-
-    .presentation {
-      display: flex;
-      align-items: stretch;
-      margin-top: 1em;
-      margin-bottom: 4em;
-      /* needed for the ::before element */
-      position: relative;
-    }
-
-    .presentation::before {
-      content: "";
-      position: absolute;
-      transform: translateY(0.5em);
-      left: 30%;
-      bottom: -2em;
-      width: 40%;
-      height: 3px;
-      background: var(--text-secondary);
-    }
-
-    .presentation img {
-      max-width: 33%;
-      border-radius: 80px 0 0 80px;
-    }
-
-    .presentation .text {
-      border-right: solid 2px var(--text-secondary);
-      border-radius: 0 80px 80px 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .presentation h1 {
-      font-weight: 700;
-      margin: 0;
-      text-align: left;
-    }
-
-    @media (max-width: 1200px) {
-      p {
-        font-size: 1.2em;
-      }
-    }
-
-    @media (max-width: 800px) {
-      .home-container {
-        flex-direction: column;
-      }
-
-      .home-copy {
-        flex: 0;
-        padding: 0 1em 2em 1em;
-        text-align: center;
-      }
-    }
-  </style>
 </BaseLayout>
+
+<style>
+  /* Sections stacked with the mockup's 40px rhythm */
+  .home {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+  }
+
+  /* ---------- Intro: one handwritten word, one sentence ---------- */
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .greeting {
+    font-family: var(--font-signature);
+    font-size: 38px;
+    line-height: 46px;
+    font-weight: 400;
+    letter-spacing: normal;
+    color: var(--sage-deep);
+  }
+
+  .intro-text {
+    font-size: 19px;
+    line-height: 29px;
+    color: var(--ink);
+  }
+
+  /* ---------- Freshly planted ---------- */
+  .fresh {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Section head: heading left, "All notes" right, on one baseline */
+  .sechead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    max-width: var(--measure);
+  }
+
+  /* `.link` (global) gives the colour and underline; padding = 44px tap height */
+  .all-notes {
+    padding: 12px 0;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ---------- Pea pod ornament between two hairlines ---------- */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: var(--measure);
+    color: var(--sage-deep);
+  }
+
+  .ornament::before,
+  .ornament::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ornament :global(svg) {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    stroke-width: 1.5;
+  }
+
+  /* ---------- Wander by topic ---------- */
+  .wander {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .wander-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  @media (min-width: 960px) {
+    .greeting {
+      font-size: 56px;
+      line-height: 64px;
+    }
+  }
+</style>
