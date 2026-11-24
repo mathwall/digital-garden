@@ -3,19 +3,26 @@ import { getCollection, render } from "astro:content";
 import readingTime from "reading-time";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Bio from "../../components/Bio.astro";
+import { TOPICS } from "../../consts";
 
+/** One page per note of every topic: `/<topic slug>/<note slug>`. */
 export async function getStaticPaths() {
-  const posts = await getCollection("frontendPosts");
-  return posts.map((p) => ({
-    params: { slug: p.data.slug },
-    props: { post: p },
-  }));
+  const paths = await Promise.all(
+    TOPICS.map(async (topic) =>
+      (await getCollection(topic.collection)).map((post) => ({
+        params: { topic: topic.slug, slug: post.data.slug },
+        props: { post },
+      })),
+    ),
+  );
+  return paths.flat();
 }
 
+const { topic } = Astro.params;
 const { post } = Astro.props;
 const { title, slug, description, publishDate } = post.data;
 const readingTimeEstimate = readingTime(post.body || "").text;
-const permalink = `${Astro.site!.href}frontend/${slug}`;
+const permalink = `${Astro.site!.href}${topic}/${slug}`;
 const { Content } = await render(post);
 ---
 
@@ -23,7 +30,7 @@ const { Content } = await render(post);
   title={title}
   description={description}
   permalink={permalink}
-  current="frontend"
+  current={topic}
 >
   <header>
     <p>{publishDate} ~ {readingTimeEstimate}</p>

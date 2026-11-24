@@ -356,13 +356,13 @@ mark {
    Delete each block once nothing uses it (grep before deleting). */
 
 /* Old colour/font variables, aliased to the new tokens.
-   Both used only by pages/<topic>/[slug].astro (step 7). */
+   Both used only by pages/[topic]/[slug].astro (step 7). */
 :root {
   --text-secondary: var(--sage-deep);
   --font-family-sans: var(--font-sans);
 }
 
-/* Used by: pages/<topic>/[slug].astro (step 7), pages/about.astro (step 8) */
+/* Used by: pages/[topic]/[slug].astro (step 7), pages/about.astro (step 8) */
 .container {
   margin: 0 auto;
   max-width: var(--measure);
