@@ -4,6 +4,8 @@
  * full topic name, note count, `beet` chevron. Sorted by note count, largest
  * first (ties keep the `TOPICS` order). A new topic in `TOPICS` simply adds a
  * row. The section head ("The garden" / "Wander by topic") is the page's.
+ * Desktop: smaller rows (60px, 40px tile, 18px name) for the home's side
+ * column, as in the desktop mockup.
  * Ported from the design system (TopicList, `.mg-topics`).
  */
 import { formatNoteCount, getTopicsWithCount } from "../lib/notes";
@@ -111,6 +113,29 @@ const topics = (await getTopicsWithCount()).sort((a, b) => b.count - a.count);
     .name,
     .chev {
       transition: none;
+    }
+  }
+
+  /* Desktop: a compact list for the home's side column */
+  @media (min-width: 960px) {
+    .topic-row {
+      min-height: 60px;
+      padding: 6px 0;
+    }
+
+    .tile {
+      width: 40px;
+      height: 40px;
+    }
+
+    .tile :global(svg) {
+      width: 26px;
+      height: 26px;
+    }
+
+    .name {
+      font-size: 18px;
+      line-height: 24px;
     }
   }
 </style>

@@ -128,6 +128,15 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     color: var(--ink-muted);
   }
 
+  /* Desktop cards can be ~250px wide (two columns at 960px): let the read
+     time drop under a long tag rather than overflow the card */
+  @media (min-width: 960px) {
+    .card-top {
+      flex-wrap: wrap;
+      row-gap: var(--space-1);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .card,
     .arrow,

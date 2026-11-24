@@ -13,7 +13,12 @@ const permalink = Astro.site!.href;
 const latestNotes = (await getNotes()).slice(0, 4);
 ---
 
-<BaseLayout title={title} description={description} permalink={permalink}>
+<BaseLayout
+  title={title}
+  description={description}
+  permalink={permalink}
+  wide
+>
   <div class="home">
     <section class="intro" aria-labelledby="welcome">
       <h1 class="greeting" id="welcome">Welcome</h1>
@@ -29,31 +34,38 @@ const latestNotes = (await getNotes()).slice(0, 4);
         <h2 id="fresh-heading">Freshly planted</h2>
         <a class="link all-notes" href="/notes">All notes</a>
       </div>
-      <NoteCardList notes={latestNotes} />
+      <NoteCardList notes={latestNotes} layout="pair" />
     </section>
 
     <div class="ornament" aria-hidden="true">
       <Vegetable name="pea-pod" size={34} strokeWidth={1.5} />
     </div>
 
-    <section class="wander" aria-labelledby="wander-heading">
-      <div class="wander-head">
-        <p class="label">The garden</p>
-        <h2 id="wander-heading">Wander by topic</h2>
-      </div>
-      <TopicList />
-    </section>
+    <div class="aside">
+      <section class="wander" aria-labelledby="wander-heading">
+        <div class="wander-head">
+          <p class="label">The garden</p>
+          <h2 id="wander-heading">Wander by topic</h2>
+        </div>
+        <TopicList />
+      </section>
 
-    <SignOff />
+      <SignOff />
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  /* Sections stacked with the mockup's 40px rhythm */
+  /* Phone: sections stacked with the mockup's 40px rhythm (`.aside` is only
+     a desktop column, its sections stack with the others) */
   .home {
     display: flex;
     flex-direction: column;
     gap: var(--space-7);
+  }
+
+  .aside {
+    display: contents;
   }
 
   /* ---------- Intro: one handwritten word, one sentence ---------- */
@@ -139,10 +151,73 @@ const latestNotes = (await getNotes()).slice(0, 4);
     gap: var(--space-1);
   }
 
+  /* Desktop: intro and pea pod across the page, then two columns: the
+     latest notes (680px max) | the topics and the sign-off. The side column
+     keeps 280px at 960px (the left one shrinks first). */
   @media (min-width: 960px) {
+    .home {
+      display: grid;
+      grid-template-columns: minmax(0, 680px) minmax(280px, 1fr);
+      grid-template-areas:
+        "intro intro"
+        "ornament ornament"
+        "fresh aside";
+      align-items: start;
+      column-gap: var(--space-8);
+      row-gap: var(--space-7);
+    }
+
+    /* 72px under the header with main's 32px */
+    .intro {
+      grid-area: intro;
+      gap: var(--space-3);
+      max-width: var(--measure);
+      padding-top: var(--space-7);
+    }
+
     .greeting {
       font-size: 56px;
       line-height: 64px;
+    }
+
+    .intro-text {
+      font-size: 21px;
+      line-height: 32px;
+    }
+
+    .ornament {
+      grid-area: ornament;
+      max-width: none;
+    }
+
+    .fresh {
+      grid-area: fresh;
+      gap: var(--space-3);
+    }
+
+    .sechead {
+      margin-bottom: var(--space-2);
+    }
+
+    .aside {
+      grid-area: aside;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-7);
+    }
+
+    .wander {
+      gap: 20px;
+    }
+
+    .wander-head {
+      gap: var(--space-3);
+    }
+
+    /* A size down from the section headings: it sits in the side column */
+    .wander h2 {
+      font-size: 24px;
+      line-height: 30px;
     }
   }
 </style>

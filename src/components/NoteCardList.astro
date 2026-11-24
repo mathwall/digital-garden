@@ -2,6 +2,10 @@
 /**
  * A list of NoteCards, in the order given (pass `getNotes()` for newest
  * first). Ported from the design system (`.mg-cards`).
+ *
+ * `layout` only changes desktop (960px+); phones always get one column:
+ * - "list" (default): one column within `measure`.
+ * - "pair": two columns (the home's "Freshly planted" 2 × 2).
  */
 import type { Note } from "../lib/notes";
 import NoteCard from "./NoteCard.astro";
@@ -10,12 +14,13 @@ export interface Props {
   notes: Note[];
   /** Passed to each NoteCard: 3 under a section `h2`, 2 under the page `h1`. */
   headingLevel?: 2 | 3;
+  layout?: "list" | "pair";
 }
 
-const { notes, headingLevel = 3 } = Astro.props;
+const { notes, headingLevel = 3, layout = "list" } = Astro.props;
 ---
 
-<ul class="cards" role="list">
+<ul class:list={["cards", `cards--${layout}`]} role="list">
   {notes.map((note) => <NoteCard note={note} headingLevel={headingLevel} />)}
 </ul>
 
@@ -28,5 +33,14 @@ const { notes, headingLevel = 3 } = Astro.props;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  @media (min-width: 960px) {
+    .cards--pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+      max-width: none;
+    }
   }
 </style>
