@@ -1,0 +1,255 @@
+---
+/**
+ * "A little rain?": a switch that makes it rain over the page.
+ *
+ * - `variant="footer"` (default): the plain inline switch.
+ * - `variant="row"`: full-width row under a hairline, for the menu's preferences.
+ *
+ * Every switch on the page shares one state (`localStorage.rain`, off by
+ * default): one click handler is delegated on `document` and updates every
+ * `[data-rain-switch]`, so any number of switches stay in sync, also across tabs
+ * (`storage` event). The drops are a fixed `.rain` overlay appended to `<body>`
+ * when the rain is on, CSS-animated, hidden for reduced motion.
+ *
+ * Markup and styles ported from the design system (RainSwitch, `bundle.css`).
+ */
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./icons/Icon.astro";
+
+interface Props extends HTMLAttributes<"button"> {
+  variant?: "footer" | "row";
+}
+
+const { variant = "footer", class: className, ...attrs } = Astro.props;
+---
+
+<button
+  class:list={["rainswitch", variant === "row" && "rainswitch--row", className]}
+  type="button"
+  role="switch"
+  aria-checked="false"
+  data-rain-switch
+  {...attrs}
+>
+  <span class="end">
+    <Icon name="rain-cloud" class="cloud" size={26} />
+    <span class="label">A little rain?</span>
+  </span>
+  <span class="end">
+    <span class="track" aria-hidden="true"><span class="thumb"></span></span>
+    {/* Visual echo of aria-checked: hidden from assistive tech, which already announces the state */}
+    <span class="state" aria-hidden="true">
+      <span class="off">off</span><span class="on">on</span>
+      <Icon name="umbrella-closed" class="umb-closed" size={18} />
+      <Icon name="umbrella-open" class="umb-open" size={18} />
+    </span>
+  </span>
+</button>
+
+<script>
+  const STORAGE_KEY = "rain";
+  const DROP_COUNT = 80;
+  let overlay: HTMLElement | undefined;
+
+  function readRain(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEY) === "true";
+    } catch {
+      return false;
+    }
+  }
+
+  function saveRain(on: boolean) {
+    try {
+      localStorage.setItem(STORAGE_KEY, String(on));
+    } catch {
+      // Storage blocked: the rain still works for this page.
+    }
+  }
+
+  function createOverlay(): HTMLElement {
+    const rain = document.createElement("div");
+    rain.className = "rain";
+    rain.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < DROP_COUNT; i++) {
+      const drop = document.createElement("span");
+      const duration = 1.2 + Math.random() * 1.2; // 1.2–2.4s
+      drop.className = "drop";
+      drop.style.left = `${(Math.random() * 100).toFixed(2)}%`;
+      drop.style.animationDuration = `${duration.toFixed(2)}s`;
+      // Negative delay: drops are already mid-fall when the rain starts.
+      drop.style.animationDelay = `${(-Math.random() * duration).toFixed(2)}s`;
+      rain.append(drop);
+    }
+    return rain;
+  }
+
+  function applyRain(on: boolean) {
+    document
+      .querySelectorAll("[data-rain-switch]")
+      .forEach((button) => button.setAttribute("aria-checked", String(on)));
+    if (on) {
+      overlay ??= createOverlay();
+      if (!overlay.isConnected) document.body.append(overlay);
+    } else {
+      overlay?.remove();
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest("[data-rain-switch]");
+    if (!button) return;
+    const on = button.getAttribute("aria-checked") !== "true";
+    saveRain(on);
+    applyRain(on);
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === STORAGE_KEY) applyRain(event.newValue === "true");
+  });
+
+  applyRain(readRain());
+</script>
+
+<style>
+  .rainswitch {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: var(--touch-target);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sage-deep);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  /* Footer version: the two halves sit inline, as one row of items */
+  .end {
+    display: contents;
+  }
+
+  .cloud {
+    flex: none;
+    width: 26px;
+    height: 26px;
+  }
+
+  .label {
+    font-family: var(--font-signature);
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .track {
+    position: relative;
+    flex: none;
+    width: 44px;
+    height: 26px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--border-control);
+    border-radius: var(--radius-pill);
+    transition: background 0.2s;
+  }
+
+  .thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: var(--border-control);
+    transition: transform 0.2s;
+  }
+
+  .rainswitch[aria-checked="true"] .track {
+    background: var(--beet);
+    border-color: var(--beet);
+  }
+
+  .rainswitch[aria-checked="true"] .thumb {
+    transform: translateX(18px);
+    background: var(--on-beet);
+  }
+
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink-muted);
+  }
+
+  .state :global(svg) {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  .umb-open,
+  .rainswitch[aria-checked="true"] .umb-closed,
+  .on,
+  .rainswitch[aria-checked="true"] .off {
+    display: none;
+  }
+
+  .rainswitch[aria-checked="true"] .umb-open {
+    display: block;
+  }
+
+  .rainswitch[aria-checked="true"] .on {
+    display: inline;
+  }
+
+  /* Menu version: a full-width row under a hairline */
+  .rainswitch--row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    min-height: 48px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .rainswitch--row .end {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* The rain itself: a fixed overlay of falling drops, created by the script */
+  :global(.rain) {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 50;
+  }
+
+  :global(.rain .drop) {
+    position: absolute;
+    top: -40px;
+    width: 2px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--rain);
+    opacity: 0.7;
+    animation: rain-fall linear infinite;
+  }
+
+  @keyframes rain-fall {
+    to {
+      transform: translateY(110vh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.rain) {
+      display: none;
+    }
+  }
+</style>
