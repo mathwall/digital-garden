@@ -13,7 +13,7 @@ export default defineConfig({
   integrations: [mdx(), svelte()],
   markdown: {
     shikiConfig: {
-      theme: "nord",
+      theme: "css-variables",
     },
     remarkPlugins: [remarkGfm, remarkSmartypants],
     rehypePlugins: [
