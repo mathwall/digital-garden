@@ -356,7 +356,7 @@ mark {
    Delete each block once nothing uses it (grep before deleting). */
 
 /* Old colour/font variables, aliased to the new tokens.
-   Used by: Footer.astro (step 3), Logo.astro, Nav.astro (step 4),
+   Used by: Logo.astro, Nav.astro (step 4),
    pages/index.astro (step 5), components/blog/index.astro (step 6),
    pages/<topic>/[slug].astro (step 7). */
 :root {
