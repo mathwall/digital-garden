@@ -9,6 +9,9 @@
  * panel on the right, under the button. The sheet scrolls on its own when it
  * is taller than the viewport (the bar is sticky, so the page can't reveal it).
  *
+ * The `<header>` is a full-width band (background, hairline, shadow, slide);
+ * its content (`.bar`) stays within `page-max` with the page gutters.
+ *
  * Sticky on both breakpoints: it slides up out of view when scrolling down
  * and back when scrolling up (8px threshold), stays while within its own
  * height of the top, while the menu is open, or while it holds keyboard
@@ -79,66 +82,68 @@ const pills = [
 ---
 
 <header class="header" data-open="false" data-site-header>
-  <a class="brand" href="/">
-    <Plant class="plant" size={34} />
-    <span class="brand-txt">
-      <span class="brand-name">Mathilde Sauvage</span>
-      <span class="brand-job">full-stack product engineer</span>
-    </span>
-  </a>
+  <div class="bar">
+    <a class="brand" href="/">
+      <Plant class="plant" size={34} />
+      <span class="brand-txt">
+        <span class="brand-name">Mathilde Sauvage</span>
+        <span class="brand-job">full-stack product engineer</span>
+      </span>
+    </a>
 
-  <button
-    class="iconbtn"
-    type="button"
-    aria-label="Menu"
-    aria-expanded="false"
-    aria-controls="site-menu"
-    data-menu-button
-  >
-    <Icon name="burger" class="burger" size={20} />
-    <Icon name="close" class="close" size={20} />
-  </button>
+    <button
+      class="iconbtn"
+      type="button"
+      aria-label="Menu"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      data-menu-button
+    >
+      <Icon name="burger" class="burger" size={20} />
+      <Icon name="close" class="close" size={20} />
+    </button>
 
-  <div class="menu" id="site-menu">
-    <nav class="group" aria-labelledby="garden-label">
-      <p class="label" id="garden-label">The garden</p>
-      <ul class="navlist">
-        {
-          rows.map((row) => (
-            <li>
-              <a class="navrow" href={row.href} aria-current={row.current}>
-                <span class="tile">
-                  <Vegetable name={row.vegetable} size={26} />
-                </span>
-                <span class="navrow-txt">
-                  <span class="navrow-name">{row.name}</span>
-                  <span class="navrow-detail">{row.detail}</span>
-                </span>
-                <Icon name="chevron" class="chev" size={20} />
+    <div class="menu" id="site-menu">
+      <nav class="group" aria-labelledby="garden-label">
+        <p class="label" id="garden-label">The garden</p>
+        <ul class="navlist">
+          {
+            rows.map((row) => (
+              <li>
+                <a class="navrow" href={row.href} aria-current={row.current}>
+                  <span class="tile">
+                    <Vegetable name={row.vegetable} size={26} />
+                  </span>
+                  <span class="navrow-txt">
+                    <span class="navrow-name">{row.name}</span>
+                    <span class="navrow-detail">{row.detail}</span>
+                  </span>
+                  <Icon name="chevron" class="chev" size={20} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="group" aria-labelledby="shed-label">
+        <p class="label" id="shed-label">Also in the shed</p>
+        <div class="pills">
+          {
+            pills.map((pill) => (
+              <a class="pill" href={pill.href} aria-current={pill.current}>
+                {pill.label}
               </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+            ))
+          }
+        </div>
+      </nav>
 
-    <nav class="group" aria-labelledby="shed-label">
-      <p class="label" id="shed-label">Also in the shed</p>
-      <div class="pills">
-        {
-          pills.map((pill) => (
-            <a class="pill" href={pill.href} aria-current={pill.current}>
-              {pill.label}
-            </a>
-          ))
-        }
-      </div>
-    </nav>
-
-    <section class="prefs" aria-label="Preferences">
-      <ThemeSelect />
-      <RainSwitch variant="row" />
-    </section>
+      <section class="prefs" aria-label="Preferences">
+        <ThemeSelect />
+        <RainSwitch variant="row" />
+      </section>
+    </div>
   </div>
 </header>
 
@@ -255,16 +260,12 @@ const pills = [
 </script>
 
 <style>
+  /* The band: background, hairline, shadow and slide run edge to edge */
   .header {
     position: sticky;
     top: 0;
     z-index: 20; /* over the page, under the rain (50) and the skip link */
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
     width: 100%;
-    min-height: var(--header-height);
-    padding: 0 var(--space-4);
     border-bottom: 1px solid var(--rule);
     background: var(--paper);
     box-sizing: border-box;
@@ -288,6 +289,16 @@ const pills = [
     .header {
       transition: none;
     }
+  }
+
+  /* The content: brand left, button(s) right */
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    /* header-height includes the band's 1px hairline */
+    min-height: calc(var(--header-height) - 1px);
+    padding: 0 var(--space-4);
   }
 
   /* ---------- Brand ---------- */
@@ -535,14 +546,18 @@ const pills = [
   }
 
   @media (min-width: 960px) {
-    .header {
+    /* Content within page-max, aligned with main and the footer */
+    .bar {
+      position: relative;
       max-width: var(--page-max);
       margin: 0 auto;
       padding: 0 var(--space-6);
     }
 
-    /* The menu stays behind the button: a panel on the right instead of a full-width sheet */
+    /* The menu stays behind the button: a panel on the right instead of a
+       full-width sheet, just under the band's hairline */
     .header[data-open="true"] .menu {
+      top: calc(100% + 1px);
       left: auto;
       right: var(--space-6);
       width: 400px;
