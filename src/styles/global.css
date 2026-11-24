@@ -186,6 +186,8 @@ mark {
   margin-bottom: 0;
 }
 
+/* A `#` heading inside a note (the page already has its h1) looks like an h2 */
+.prose h1,
 .prose h2 {
   margin-top: var(--space-7);
   font-size: 24px;
@@ -206,6 +208,7 @@ mark {
   line-height: 26px;
 }
 
+.prose h1 + *,
 .prose h2 + *,
 .prose h3 + *,
 .prose h4 + *,
@@ -280,10 +283,12 @@ mark {
   color: var(--ink-muted);
 }
 
-/* Blockquote as a Callout: sage-tint ground, no left border */
+/* Blockquote as a Callout: sage-tint ground, no left border, no icon.
+   Text stays 18/28 on desktop too, as `.mg-callout p`. */
 .prose blockquote {
   margin-left: 0;
   margin-right: 0;
+  margin-bottom: 0;
   padding: 20px;
   border-radius: var(--radius-card);
   background: var(--sage-tint);
@@ -291,6 +296,17 @@ mark {
 
 .prose blockquote > * + * {
   margin-top: var(--space-2);
+}
+
+.prose blockquote p {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+/* Quote source ("— Robert Martin") */
+.prose blockquote cite {
+  font-style: normal;
+  color: var(--ink-muted);
 }
 
 .prose blockquote :not(pre) > code {
@@ -336,6 +352,7 @@ mark {
     line-height: 30px;
   }
 
+  .prose h1,
   .prose h2 {
     font-size: 28px;
     line-height: 34px;
