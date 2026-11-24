@@ -1,0 +1,454 @@
+---
+/**
+ * The top bar on every page: the plant logo with the handwritten name and the
+ * job title (one link home, watering-can cursor), and one burger / close
+ * button that opens the menu sheet: "The garden" (Home + one row per topic),
+ * "Also in the shed" (pills), and the preferences (theme, rain).
+ *
+ * Phone: the sheet opens full width under the bar. Desktop (960px+): a 400px
+ * panel on the right, under the button.
+ *
+ * Disclosure pattern: the button has `aria-expanded` / `aria-controls`; the
+ * menu is `display: none` while closed, so it is out of the tab order. It
+ * closes on a second tap, Escape (focus back on the button), a link tap, a
+ * click outside the header, or when focus moves out of it.
+ *
+ * `current` (from the layouts): "" for home, a topic slug, "about"…; the
+ * matching row or pill gets `aria-current` ("page" on that exact page,
+ * "true" on a page inside the topic, e.g. a note).
+ *
+ * Markup and styles ported from the design system (SiteHeader, `bundle.css`).
+ */
+import { SOCIAL_LINKS } from "../consts";
+import { formatNoteCount, getTopicsWithCount } from "../lib/notes";
+import RainSwitch from "./RainSwitch.astro";
+import ThemeSelect from "./ThemeSelect.astro";
+import Icon from "./icons/Icon.astro";
+import Plant from "./icons/Plant.astro";
+import Vegetable from "./icons/Vegetable.astro";
+
+interface Props {
+  current?: string;
+}
+
+const { current = "" } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const topics = await getTopicsWithCount();
+
+/** `aria-current` for a link to `href` belonging to section `section`. */
+function currentFor(
+  href: string,
+  section: string,
+): "page" | "true" | undefined {
+  if (path === href) return "page";
+  if (current === section) return "true";
+  return undefined;
+}
+
+const rows = [
+  {
+    href: "/",
+    name: "Home",
+    detail: "the garden gate",
+    vegetable: "gate" as const,
+    current: currentFor("/", ""),
+  },
+  ...topics.map(({ topic, count }) => ({
+    href: `/${topic.slug}`,
+    name: topic.name,
+    detail: formatNoteCount(count),
+    vegetable: topic.vegetable,
+    current: currentFor(`/${topic.slug}`, topic.slug),
+  })),
+];
+
+const pills = [
+  { href: "/notes", label: "all notes", current: currentFor("/notes", "notes") },
+  { href: "/about", label: "about me", current: currentFor("/about", "about") },
+  { href: SOCIAL_LINKS.github, label: "GitHub" },
+  { href: SOCIAL_LINKS.linkedin, label: "LinkedIn" },
+];
+---
+
+<header class="header" data-open="false" data-site-header>
+  <a class="brand" href="/">
+    <Plant class="plant" size={34} />
+    <span class="brand-txt">
+      <span class="brand-name">Mathilde Sauvage</span>
+      <span class="brand-job">full-stack product engineer</span>
+    </span>
+  </a>
+
+  <button
+    class="iconbtn"
+    type="button"
+    aria-label="Menu"
+    aria-expanded="false"
+    aria-controls="site-menu"
+    data-menu-button
+  >
+    <Icon name="burger" class="burger" size={20} />
+    <Icon name="close" class="close" size={20} />
+  </button>
+
+  <div class="menu" id="site-menu">
+    <nav class="group" aria-labelledby="garden-label">
+      <p class="label" id="garden-label">The garden</p>
+      <ul class="navlist">
+        {
+          rows.map((row) => (
+            <li>
+              <a class="navrow" href={row.href} aria-current={row.current}>
+                <span class="tile">
+                  <Vegetable name={row.vegetable} size={26} />
+                </span>
+                <span class="navrow-txt">
+                  <span class="navrow-name">{row.name}</span>
+                  <span class="navrow-detail">{row.detail}</span>
+                </span>
+                <Icon name="chevron" class="chev" size={20} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav class="group" aria-labelledby="shed-label">
+      <p class="label" id="shed-label">Also in the shed</p>
+      <div class="pills">
+        {
+          pills.map((pill) => (
+            <a class="pill" href={pill.href} aria-current={pill.current}>
+              {pill.label}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+
+    <section class="prefs" aria-label="Preferences">
+      <ThemeSelect />
+      <RainSwitch variant="row" />
+    </section>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  const button = header?.querySelector<HTMLButtonElement>("[data-menu-button]");
+
+  if (header && button) {
+    const isOpen = () => header.dataset.open === "true";
+
+    const setOpen = (open: boolean) => {
+      header.dataset.open = String(open);
+      button.setAttribute("aria-expanded", String(open));
+    };
+
+    button.addEventListener("click", () => setOpen(!isOpen()));
+
+    // Escape: close and put focus back on the button (the menu disappears).
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !isOpen()) return;
+      setOpen(false);
+      button.focus();
+    });
+
+    // A link tap closes it (matters for same-page links, e.g. Home on home).
+    // Buttons (theme, rain) keep it open.
+    header.querySelector("#site-menu")?.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("a")) {
+        setOpen(false);
+      }
+    });
+
+    // A click outside the header closes it.
+    document.addEventListener("click", (event) => {
+      if (isOpen() && event.target instanceof Node && !header.contains(event.target)) {
+        setOpen(false);
+      }
+    });
+
+    // Tabbing out of the menu closes it, so it never covers the focused element.
+    // `relatedTarget` is null when Safari clicks a button: ignore that case.
+    header.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget;
+      if (isOpen() && next instanceof Node && !header.contains(next)) {
+        setOpen(false);
+      }
+    });
+  }
+</script>
+
+<style>
+  .header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: var(--header-height);
+    padding: 0 var(--space-4);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    box-sizing: border-box;
+  }
+
+  /* ---------- Brand ---------- */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: -4px;
+    margin-right: auto;
+    min-height: var(--touch-target);
+    color: var(--sage-deep);
+    text-decoration: none;
+  }
+
+  .brand:hover {
+    cursor:
+      url("/assets/watering-can-blue.svg") 1 22,
+      pointer;
+  }
+
+  :global(:root.theme-dark) .brand:hover {
+    cursor:
+      url("/assets/watering-can-white.svg") 1 22,
+      pointer;
+  }
+
+  .plant {
+    flex: none;
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-txt {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-name {
+    font-family: var(--font-signature);
+    font-size: 27px;
+    line-height: 30px;
+    padding-top: 4px;
+    white-space: nowrap;
+  }
+
+  .brand-job {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 14px;
+    letter-spacing: 0.01em;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  /* ---------- Burger / close button ---------- */
+  .iconbtn {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--touch-target);
+    height: var(--touch-target);
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--border-control);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .iconbtn:hover {
+    border-color: var(--beet);
+    color: var(--beet);
+  }
+
+  .iconbtn :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .close,
+  .header[data-open="true"] .burger {
+    display: none;
+  }
+
+  .header[data-open="true"] .close {
+    display: block;
+  }
+
+  /* ---------- Menu sheet, under the bar ---------- */
+  .menu {
+    display: none;
+  }
+
+  .header[data-open="true"] .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 20px var(--space-4) var(--space-5);
+    background: var(--paper-raised);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 60px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .navlist li:first-child .navrow {
+    border-top: 1px solid var(--rule);
+  }
+
+  .tile {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: var(--radius-tag);
+    background: var(--sage-tint);
+    color: var(--sage-deep);
+  }
+
+  .tile :global(svg) {
+    width: 26px;
+    height: 26px;
+    stroke-width: 2;
+  }
+
+  .navrow-txt {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .navrow-name {
+    font-size: 21px;
+    line-height: 26px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .navrow-detail {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ink-muted);
+  }
+
+  .navrow[aria-current] .navrow-name {
+    text-decoration: underline;
+    text-decoration-color: var(--sage-deep);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+
+  .chev {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--beet);
+    transition: transform 0.2s;
+  }
+
+  .navrow:hover .chev {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chev {
+      transition: none;
+    }
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    padding: 0 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-control);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .pill:hover {
+    border-color: var(--beet);
+    color: var(--beet);
+  }
+
+  /* Same cue as the current row: a sage underline */
+  .pill[aria-current] {
+    text-decoration: underline;
+    text-decoration-color: var(--sage-deep);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .prefs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--paper-sunk);
+  }
+
+  @media (min-width: 960px) {
+    .header {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+    }
+
+    /* The menu stays behind the button: a panel on the right instead of a full-width sheet */
+    .header[data-open="true"] .menu {
+      left: auto;
+      right: var(--space-6);
+      width: 400px;
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+    }
+  }
+</style>
