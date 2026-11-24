@@ -3,7 +3,8 @@
  * "Why a digital garden?": a `sage-tint` block near the end of the home page,
  * closed by a small signature (the illustrated avatar, 52px round with a 2px
  * `sage-deep` ring; "Mathilde" handwritten; the job title; "More about me",
- * an external link to LinkedIn in a new tab, with a ↗ arrow).
+ * an external link to LinkedIn, same tab as the footer and menu ones,
+ * with a ↗ arrow).
  * The only place the avatar appears. Text from the "Mixed" home mockup.
  * Ported from the design system (SignOff, `.mg-why` / `.mg-signoff`).
  */
@@ -30,13 +31,8 @@ import Icon from "./icons/Icon.astro";
     <div class="signoff-txt">
       <span class="name">Mathilde</span>
       <span class="job">full-stack product engineer</span>
-      <a
-        class="link more"
-        href={SOCIAL_LINKS.linkedin}
-        target="_blank"
-        rel="noopener"
-      >
-        More about me<span class="sr-only"> on LinkedIn (opens in a new tab)</span>
+      <a class="link more" href={SOCIAL_LINKS.linkedin}>
+        More about me<span class="sr-only"> on LinkedIn</span>
         <Icon name="arrow-up-right" class="arrow" size={16} />
       </a>
     </div>
