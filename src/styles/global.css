@@ -399,6 +399,11 @@ mark {
     line-height: 34px;
   }
 
+  /* "On this page" jumps: 20px of air under the header (scroll-padding-top) */
+  .prose h2 {
+    scroll-margin-top: 20px;
+  }
+
   .prose .code {
     margin-left: 0;
     margin-right: 0;
