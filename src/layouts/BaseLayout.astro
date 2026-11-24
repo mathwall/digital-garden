@@ -1,6 +1,6 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 
 export interface Props {
@@ -22,7 +22,7 @@ const { title, description, permalink, current } = Astro.props;
   </head>
   <body>
     <div class="layout">
-      <Header current={current} />
+      <SiteHeader current={current} />
 
       <main>
         <div class="column">

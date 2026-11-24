@@ -356,15 +356,10 @@ mark {
    Delete each block once nothing uses it (grep before deleting). */
 
 /* Old colour/font variables, aliased to the new tokens.
-   Used by: Logo.astro, Nav.astro (step 4),
-   pages/index.astro (step 5), components/blog/index.astro (step 6),
-   pages/<topic>/[slug].astro (step 7). */
+   --text-secondary used by: pages/index.astro (step 5), components/blog/index.astro (step 6),
+   pages/<topic>/[slug].astro (step 7); --font-family-sans by the last two. */
 :root {
-  --background-body: var(--paper);
-  --text-main: var(--ink);
   --text-secondary: var(--sage-deep);
-  --primary-color: var(--beet);
-  --font-family-serif: var(--font-signature);
   --font-family-sans: var(--font-sans);
 }
 
@@ -373,39 +368,4 @@ mark {
   margin: 0 auto;
   max-width: var(--measure);
   width: 100%;
-}
-
-/* Used by: ThemeToggleButton.svelte (removed in step 4) */
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6em;
-  padding: 0.33em 0.67em;
-  border-radius: var(--radius-pill);
-}
-
-.theme-toggle > label {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-.theme-toggle > label:focus-within {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-.theme-toggle .checked {
-  color: var(--beet);
-  opacity: 1;
-}
-
-input[name="theme-toggle"] {
-  position: absolute;
-  opacity: 0;
-  inset: 0;
-  z-index: -1;
 }
