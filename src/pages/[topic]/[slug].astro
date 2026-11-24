@@ -2,7 +2,6 @@
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TopicTag from "../../components/TopicTag.astro";
-import GrowthStage from "../../components/GrowthStage.astro";
 import {
   formatNoteDate,
   getNotes,
@@ -24,7 +23,7 @@ interface Props {
 }
 
 const { note } = Astro.props;
-const { title, description, stage, updatedDate } = note.entry.data;
+const { title, description, updatedDate } = note.entry.data;
 const updated = updatedDate ? parsePublishDate(updatedDate) : undefined;
 const permalink = `${Astro.site!.href}${note.href.slice(1)}`;
 const { Content } = await render(note.entry);
@@ -40,22 +39,19 @@ const { Content } = await render(note.entry);
     <header class="note-head">
       <TopicTag topic={note.topic} />
       <h1>{title}</h1>
-      <div class="meta">
-        <p class="dates">
-          <span>
-            Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
-          </span>
-          {
-            updated && (
-              <span>
-                Tended <time datetime={isoDay(updated)}>{formatNoteDate(updated)}</time>
-              </span>
-            )
-          }
-          <span>{note.readingTime}</span>
-        </p>
-        <GrowthStage stage={stage} />
-      </div>
+      <p class="dates">
+        <span>
+          Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
+        </span>
+        {
+          updated && (
+            <span>
+              Tended <time datetime={isoDay(updated)}>{formatNoteDate(updated)}</time>
+            </span>
+          )
+        }
+        <span>{note.readingTime}</span>
+      </p>
     </header>
     <div class="prose">
       <Content />
@@ -64,7 +60,7 @@ const { Content } = await render(note.entry);
 </BaseLayout>
 
 <style>
-  /* Left-aligned like every page header: tag, page title, then dates + read time + stage */
+  /* Left-aligned like every page header: tag, page title, then dates + read time */
   .note-head {
     display: flex;
     flex-direction: column;
@@ -73,19 +69,12 @@ const { Content } = await render(note.entry);
     margin-bottom: var(--space-6);
   }
 
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: var(--space-4);
-    row-gap: var(--space-2);
-  }
-
   /* Plain information, mono like the read time and counts elsewhere */
   .dates {
     display: flex;
     flex-wrap: wrap;
     column-gap: var(--space-3);
+    row-gap: var(--space-2);
     font-family: var(--font-mono);
     font-size: 13px;
     line-height: 18px;
