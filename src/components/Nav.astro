@@ -1,5 +1,4 @@
 ---
-import RainButton from "./RainButton.astro";
 import ThemeToggleButton from "./ThemeToggleButton.svelte";
 const { current = "" } = Astro.props;
 ---
@@ -37,7 +36,6 @@ const { current = "" } = Astro.props;
     <div class="theme-toggle-container">
       <ThemeToggleButton client:load />
     </div>
-    <RainButton client:idle />
   </div>
 </nav>
 
