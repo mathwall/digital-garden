@@ -1,69 +1,112 @@
 ---
-import { getCollection, render } from "astro:content";
-import readingTime from "reading-time";
+import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Bio from "../../components/Bio.astro";
-import { TOPICS } from "../../consts";
+import TopicTag from "../../components/TopicTag.astro";
+import GrowthStage from "../../components/GrowthStage.astro";
+import {
+  formatNoteDate,
+  getNotes,
+  isoDay,
+  parsePublishDate,
+  type Note,
+} from "../../lib/notes";
 
 /** One page per note of every topic: `/<topic slug>/<note slug>`. */
 export async function getStaticPaths() {
-  const paths = await Promise.all(
-    TOPICS.map(async (topic) =>
-      (await getCollection(topic.collection)).map((post) => ({
-        params: { topic: topic.slug, slug: post.data.slug },
-        props: { post },
-      })),
-    ),
-  );
-  return paths.flat();
+  return (await getNotes()).map((note) => ({
+    params: { topic: note.topic.slug, slug: note.entry.data.slug },
+    props: { note },
+  }));
 }
 
-const { topic } = Astro.params;
-const { post } = Astro.props;
-const { title, slug, description, publishDate } = post.data;
-const readingTimeEstimate = readingTime(post.body || "").text;
-const permalink = `${Astro.site!.href}${topic}/${slug}`;
-const { Content } = await render(post);
+interface Props {
+  note: Note;
+}
+
+const { note } = Astro.props;
+const { title, description, stage, updatedDate } = note.entry.data;
+const updated = updatedDate ? parsePublishDate(updatedDate) : undefined;
+const permalink = `${Astro.site!.href}${note.href.slice(1)}`;
+const { Content } = await render(note.entry);
 ---
 
 <BaseLayout
   title={title}
   description={description}
   permalink={permalink}
-  current={topic}
+  current={note.topic.slug}
 >
-  <header>
-    <p>{publishDate} ~ {readingTimeEstimate}</p>
-    <h1>{title}</h1>
-    <hr />
-  </header>
-  <div class="container">
-    <article class="content">
+  <article>
+    <header class="note-head">
+      <TopicTag topic={note.topic} />
+      <h1>{title}</h1>
+      <div class="meta">
+        <p class="dates">
+          <span>
+            Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
+          </span>
+          {
+            updated && (
+              <span>
+                Tended <time datetime={isoDay(updated)}>{formatNoteDate(updated)}</time>
+              </span>
+            )
+          }
+          <span>{note.readingTime}</span>
+        </p>
+        <GrowthStage stage={stage} />
+      </div>
+    </header>
+    <div class="prose">
       <Content />
-    </article>
+    </div>
+  </article>
+  <div class="container">
     <hr />
     <Bio />
   </div>
 </BaseLayout>
 
 <style>
-  header {
-    text-align: center;
+  /* Left-aligned like every page header: tag, page title, then dates + read time + stage */
+  .note-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
   }
 
-  header h1 {
-    margin-bottom: 0.7em;
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
   }
 
-  header p {
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    font-family: var(--font-family-sans);
-    font-weight: 600;
+  /* Plain information, mono like the read time and counts elsewhere */
+  .dates {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink-muted);
   }
 
-  header hr {
-    min-width: 100px;
-    width: 30%;
+  .dates > span + span::before {
+    content: "·";
+    content: "·" / "";
+    margin-right: var(--space-3);
+  }
+
+  @media (min-width: 960px) {
+    .note-head {
+      gap: var(--space-4);
+      margin-bottom: var(--space-7);
+    }
   }
 </style>
