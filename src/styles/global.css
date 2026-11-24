@@ -407,14 +407,3 @@ mark {
   --astro-code-token-deleted: var(--beet);
   --astro-code-token-changed: var(--stage-budding);
 }
-
-/* ---------- LEGACY (temporary) ----------
-   Kept only so the old components keep working until they are replaced.
-   Delete each block once nothing uses it (grep before deleting). */
-
-/* Used by: pages/about.astro (step 8) */
-.container {
-  margin: 0 auto;
-  max-width: var(--measure);
-  width: 100%;
-}
