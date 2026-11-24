@@ -245,13 +245,27 @@ mark {
   color: var(--ink);
 }
 
-/* Code blocks: basic box only; step 7 maps Shiki to tokens and bleeds to the phone edges */
+/* Code blocks (CodeBlock, `.mg-code`): Shiki's `css-variables` theme
+   (astro.config.mjs) colours each token with `var(--astro-code-*)`, mapped
+   to the tokens in "Code colours" below. A recessed band that bleeds to
+   the screen edges on phones (cancels main's `space-4` gutters), a bordered
+   box within `measure` on desktop. Long lines scroll sideways. */
 .prose pre {
+  margin-left: calc(-1 * var(--space-4));
+  margin-right: calc(-1 * var(--space-4));
+  margin-bottom: 0;
   padding: var(--space-4);
-  border-radius: var(--radius-md);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-sunk);
+  color: var(--ink);
   overflow-x: auto;
   font-size: 14px;
   line-height: 22px;
+}
+
+.prose pre [style*="--astro-code-token-comment"] {
+  font-style: italic;
 }
 
 .prose pre code {
@@ -359,6 +373,10 @@ mark {
   }
 
   .prose pre {
+    margin-left: 0;
+    margin-right: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
     font-size: 15px;
     line-height: 24px;
   }
@@ -366,6 +384,28 @@ mark {
   .prose blockquote {
     padding: var(--space-5);
   }
+}
+
+/* ---------- Code colours: Shiki `css-variables` theme → tokens ----------
+   Declared on :root like --focus, so they follow `:root.theme-dark` with no
+   dark copy. Keywords (and CSS `:`) beet, strings sage-deep, numbers and
+   CSS properties (Shiki's "constant") stage-seedling, comments ink-muted
+   (italic above), the rest ink. */
+:root {
+  --astro-code-foreground: var(--ink);
+  --astro-code-background: var(--paper-sunk);
+  --astro-code-token-keyword: var(--beet);
+  --astro-code-token-string: var(--sage-deep);
+  --astro-code-token-string-expression: var(--sage-deep);
+  --astro-code-token-constant: var(--stage-seedling);
+  --astro-code-token-comment: var(--ink-muted);
+  --astro-code-token-parameter: var(--ink);
+  --astro-code-token-function: var(--ink);
+  --astro-code-token-punctuation: var(--ink);
+  --astro-code-token-link: var(--ink);
+  --astro-code-token-inserted: var(--sage-deep);
+  --astro-code-token-deleted: var(--beet);
+  --astro-code-token-changed: var(--stage-budding);
 }
 
 /* ---------- LEGACY (temporary) ----------
