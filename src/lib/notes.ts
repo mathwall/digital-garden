@@ -79,6 +79,21 @@ export async function getTopicsWithCount(): Promise<
   );
 }
 
+const SHORT_MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** "20 Jan 2026" (UTC, like `parsePublishDate`). */
+export function formatNoteDate(date: Date): string {
+  return `${date.getUTCDate()} ${SHORT_MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+}
+
+/** "2026-01-20", for `<time datetime>`. */
+export function isoDay(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 /** "1 note", "7 notes" */
 export function formatNoteCount(count: number): string {
   return `${count} ${count === 1 ? "note" : "notes"}`;
