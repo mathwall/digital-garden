@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
-import svelte from "@astrojs/svelte";
 import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
 import rehypeExternalLinks from "rehype-external-links";
@@ -10,7 +9,7 @@ import rehypeExternalLinks from "rehype-external-links";
 export default defineConfig({
   site: "https://mathwall.github.io",
   //   base: "/digital-garden",
-  integrations: [mdx(), svelte()],
+  integrations: [mdx()],
   markdown: {
     shikiConfig: {
       theme: "css-variables",
