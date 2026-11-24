@@ -2,6 +2,7 @@
 title: Which font format should I use for my website?
 slug: which-font-format-for-my-website
 publishDate: 26 Sept 2025
+stage: budding
 description: A quick guide on font formats
 ---
 

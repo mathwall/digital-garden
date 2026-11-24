@@ -2,6 +2,7 @@
 title: What is JavaScript, by the way?
 slug: what-is-js
 publishDate: 9 Jan 2026
+stage: budding
 description: A reminder about what is JS and ECMAScript
 ---
 
