@@ -1,7 +1,6 @@
 ---
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Bio from "../../components/Bio.astro";
 import TopicTag from "../../components/TopicTag.astro";
 import GrowthStage from "../../components/GrowthStage.astro";
 import {
@@ -62,10 +61,6 @@ const { Content } = await render(note.entry);
       <Content />
     </div>
   </article>
-  <div class="container">
-    <hr />
-    <Bio />
-  </div>
 </BaseLayout>
 
 <style>
