@@ -1,43 +1,43 @@
-:root {
-  --background-body: #f4f1de;
-  --text-main: #0d1c0d;
-  --text-secondary: #8d9263;
-  --primary-color: #83b4c3;
-  --font-family-serif: "Cedarville Cursive", serif;
-  --font-family-sans: var(--font-sans);
-}
+/*
+  Global styles — "Beetroot & sage".
+  Tokens live in tokens.css, @font-face rules in fonts.css.
+  Mobile first: base rules are the 390px phone layout; the one breakpoint
+  (`bp-desktop`) is added with @media (min-width: 960px).
+  Component styles live in each Astro component (scoped), ported from the
+  design system's bundle.css. Only shared bits are here: base, .link, focus
+  ring, .label, .sr-only, .prose.
+*/
 
-:root.theme-dark {
-  --background-body: #0d1c0d;
-  --text-main: #d8fdda;
-  --text-secondary: #8d9263;
-  --primary-color: #83b4c3;
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
-  overflow-y: scroll;
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @supports (scrollbar-gutter: stable) {
   html {
-    overflow-y: auto;
     scrollbar-gutter: stable;
   }
 }
 
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
-  font-family: var(--font-family-sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.6;
-  background-color: var(--background-body);
-  color: var(--text-main);
+  line-height: 24px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -46,199 +46,345 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-family-sans);
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 0.5em 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
+/* page-title */
 h1 {
-  font-family: var(--font-family-serif);
-  font-size: 4em;
-  margin: 0 0 1em 0;
+  font-size: 34px;
+  line-height: 40px;
 }
 
+/* heading */
 h2 {
-  margin: 1.6em 0 0 0;
-  font-size: 1.8em;
+  font-size: 24px;
+  line-height: 30px;
 }
 
 h3 {
-  font-size: 1.5em;
-  margin: 1em 0 0 0;
+  font-size: 20px;
+  line-height: 26px;
 }
 
-h4 {
-  font-size: 1.4em;
-}
-
-h5 {
-  font-size: 1.3em;
-}
-
+h4,
+h5,
 h6 {
-  font-size: 1.2em;
+  font-size: 18px;
+  line-height: 26px;
 }
 
-p,
-ul,
-ol {
-  font-size: 1.3rem;
-  line-height: 1.5em;
-  margin: 0.5em 0;
-}
-
-ol,
-ul {
-  padding-left: 2rem;
-  -webkit-padding-start: 5%;
-  -webkit-padding-end: 5%;
-}
-
-li {
-  margin: 0.5rem 0;
-}
-
-li p {
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
+p {
+  margin: 0;
 }
 
 a {
   color: inherit;
-  transition: color linear 0.15s;
 }
 
-a:hover {
-  color: var(--primary-color);
-}
-
-code {
-  overflow-wrap: break-word;
-}
-
-p a {
-  text-decoration: none;
-  box-shadow: inset 0 -0.12em 0 var(--primary-color);
-  -webkit-transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-p a:hover {
-  box-shadow: inset 0 -1.5em 0 var(--primary-color);
-  color: var(--text-main);
-}
-
-img {
+img,
+video {
   max-width: 100%;
   height: auto;
 }
 
-hr {
-  padding: 0;
-  border: 0;
-  height: 10px;
-  margin: 40px auto;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='20' height='10'  viewBox='0 0 20 10' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' clip-rule='evenodd' stroke-miterlimit='10'%3e%3cpath fill='none' d='M0 0h20v10H0z'/%3e%3cclipPath id='a'%3e%3cpath d='M0 0h20v10H0z'/%3e%3c/clipPath%3e%3cg clip-path='url(%23a)'%3e%3cpath d='M20 7.384c-4.999-.001-5-4.768-9.999-4.768C5 2.616 5 7.384 0 7.384' fill='none' stroke-width='3' stroke='%23548E9B'/%3e%3c/g%3e%3c/svg%3e");
-}
-
-code {
-  font-family: "SF Mono", menlo, inconsolata, monospace;
-  font-size: calc(1em - 2px);
-  color: var(--text-secondary);
-  padding: 0.2em 0.4em;
-  border-radius: 2px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+code,
+kbd,
+samp,
 pre {
-  border-radius: 8px !important;
-  margin: 1.2em 0 !important;
-  padding: 1.2em;
+  font-family: var(--font-mono);
 }
 
-pre code {
-  padding: 0;
-}
-
-blockquote {
-  border-left: 4px solid #cccccc;
-  font-size: 1.4em;
-  font-style: italic;
-  margin: 2rem 0;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-blockquote p {
-  padding-bottom: 6px;
-}
-
-blockquote footer {
-  font-size: 1.1rem;
-  text-align: right;
-}
-
-figure {
-  padding: 0;
-  border: 0;
-  font-size: 100%;
+button {
   font: inherit;
-  vertical-align: baseline;
-  -webkit-margin-start: 0;
-  -webkit-margin-end: 0;
-  margin: 0 0 3em 0;
+  color: inherit;
 }
 
-table {
+mark {
+  background: var(--highlight);
+  color: var(--ink);
+}
+
+::selection {
+  background: var(--beet-soft);
+  color: var(--ink);
+}
+
+/* ---------- Focus ring: 2px beet, 2px offset, on everything focusable ---------- */
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Shared utilities ---------- */
+
+/* Link: beet text, soft underline that fills on hover */
+.link,
+.prose a {
+  color: var(--beet);
+  text-decoration: underline;
+  text-decoration-color: var(--beet-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.link:hover,
+.prose a:hover {
+  background: var(--beet-soft);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* Label: small mono capitals above a section */
+.label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Prose: note content (Markdown / MDX output) ---------- */
+
+.prose {
+  max-width: var(--measure);
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--ink);
+  overflow-wrap: break-word;
+}
+
+.prose > * + * {
+  margin-top: 1em;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose figure,
+.prose table {
+  margin-bottom: 0;
+}
+
+.prose h2 {
+  margin-top: var(--space-7);
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.prose h3 {
+  margin-top: var(--space-6);
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: var(--space-5);
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + *,
+.prose h5 + *,
+.prose h6 + * {
+  margin-top: var(--space-3);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose li + li,
+.prose li > ul,
+.prose li > ol {
+  margin-top: var(--space-2);
+}
+
+.prose li::marker {
+  color: var(--ink-muted);
+}
+
+.prose strong {
+  font-weight: 650;
+}
+
+/* Inline code: ink on paper-sunk */
+.prose :not(pre) > code {
+  font-size: 0.88em;
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+/* Code blocks: basic box only; step 7 maps Shiki to tokens and bleeds to the phone edges */
+.prose pre {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.prose pre code {
+  font-size: inherit;
+}
+
+.prose hr {
+  height: 0;
+  margin: var(--space-7) 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.prose img,
+.prose video {
+  display: block;
+  border-radius: var(--radius-md);
+}
+
+.prose figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.prose figcaption {
+  margin-top: var(--space-2);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+/* Blockquote as a Callout: sage-tint ground, no left border */
+.prose blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--sage-tint);
+}
+
+.prose blockquote > * + * {
+  margin-top: var(--space-2);
+}
+
+.prose blockquote :not(pre) > code {
+  background: var(--paper);
+}
+
+/* Tables scroll sideways rather than overflow the page */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
-  font-family: var(--font-family-sans);
-  font-size: 1.125em;
-  margin: 2em 0;
+  font-size: 16px;
+  line-height: 24px;
 }
 
-th {
-  border-bottom: 2px solid #cccccc;
-  padding: 0.4em 0.8em;
-  word-break: break-word;
+.prose th,
+.prose td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
 }
 
-td {
-  padding: 0.4em 0.8em;
-  word-break: break-word;
+.prose th {
+  font-weight: 650;
+  border-bottom-color: var(--border-control);
 }
 
+@media (min-width: 960px) {
+  h1 {
+    font-size: 44px;
+    line-height: 50px;
+  }
+
+  h2 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  .prose {
+    font-size: 19px;
+    line-height: 30px;
+  }
+
+  .prose h2 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  .prose pre {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .prose blockquote {
+    padding: var(--space-5);
+  }
+}
+
+/* ---------- LEGACY (temporary) ----------
+   Kept only so the old components keep working until they are replaced.
+   Delete each block once nothing uses it (grep before deleting). */
+
+/* Old colour/font variables, aliased to the new tokens.
+   Used by: Footer.astro (step 3), Logo.astro, Nav.astro (step 4),
+   pages/index.astro (step 5), components/blog/index.astro (step 6),
+   pages/<topic>/[slug].astro (step 7). */
+:root {
+  --background-body: var(--paper);
+  --text-main: var(--ink);
+  --text-secondary: var(--sage-deep);
+  --primary-color: var(--beet);
+  --font-family-serif: var(--font-signature);
+  --font-family-sans: var(--font-sans);
+}
+
+/* Used by: components/blog/index.astro (step 6), pages/<topic>/[slug].astro (step 7), pages/about.astro (step 8) */
 .container {
   margin: 0 auto;
-  max-width: 42em;
+  max-width: var(--measure);
   width: 100%;
 }
 
-.content h1 {
-  font-size: 3em;
-  margin: 1em 0;
-}
-
+/* Used by: ThemeToggleButton.svelte (removed in step 4) */
 .theme-toggle {
   display: inline-flex;
   align-items: center;
-  height: 100%;
-  padding: 0.33em 0.67em;
-  padding-top: 8px;
-  margin: 10px 0px;
   gap: 0.6em;
-  border-radius: 99em;
-  background-color: var(--theme-code-inline-bg);
-}
-
-.theme-toggle > label:focus-within {
-  outline: 2px solid transparent;
-  box-shadow: 0 0 0 0.08em var(--theme-accent), 0 0 0 0.12em white;
+  padding: 0.33em 0.67em;
+  border-radius: var(--radius-pill);
 }
 
 .theme-toggle > label {
-  color: var(--theme-code-inline-text);
   position: relative;
   display: flex;
   align-items: center;
@@ -247,63 +393,19 @@ td {
   cursor: pointer;
 }
 
+.theme-toggle > label:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .theme-toggle .checked {
-  color: var(--theme-accent);
+  color: var(--beet);
   opacity: 1;
 }
 
 input[name="theme-toggle"] {
   position: absolute;
   opacity: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: -1;
-}
-
-button {
-  all: unset;
-  cursor: pointer;
-  height: fit-content;
-  border: solid 0.12em var(--primary-color);
-  border-radius: 0.36em;
-  padding: 0.24em;
-  box-shadow: inset 0 -0.12em 0 var(--primary-color);
-  -webkit-transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-button:hover {
-  box-shadow: inset 0 -2em 0 var(--primary-color);
-  color: var(--text-main);
-}
-
-@media (max-width: 1020px) {
-  h1 {
-    font-size: 3em;
-  }
-
-  .content h1 {
-    font-size: 2.4em;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
-
-  p,
-  ul,
-  ol {
-    font-size: 1.2rem;
-    margin: 0.5em 0;
-  }
-}
-
-@media screen and (max-width: 520px) {
-  .theme-toggle {
-    margin: 0px;
-  }
 }
