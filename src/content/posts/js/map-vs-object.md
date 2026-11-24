@@ -2,7 +2,6 @@
 title: "The power of Maps: stop using Objects for everything!"
 slug: map-vs-object
 publishDate: 12 Jan 2026
-stage: budding
 description: Some basics about what a Map is and when to use it
 ---
 

@@ -2,7 +2,6 @@
 title: Understand CSS variables
 slug: css-variables
 publishDate: 29 Sept 2025
-stage: seedling
 description: Good-to-know things about CSS variables
 ---
 
