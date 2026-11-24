@@ -416,13 +416,15 @@ mark {
 
 /* ---------- Code colours: Shiki `css-variables` theme → tokens ----------
    Declared on :root like --focus, so they follow `:root.theme-dark` with no
-   dark copy. Keywords (and CSS `:`) beet, strings sage-deep, numbers and
-   CSS properties (Shiki's "constant") stage-seedling, comments ink-muted
-   (italic above), the rest ink. */
+   dark copy. Keywords (and CSS `:`) stage-budding (not beet: beet only
+   marks what you can tap), strings sage-deep, numbers and CSS properties
+   (Shiki's "constant") stage-seedling, comments ink-muted (italic above),
+   the rest ink. Every one is >= 4.8:1 on paper-sunk in both themes
+   (lowest: stage-budding 4.87:1 light). */
 :root {
   --astro-code-foreground: var(--ink);
   --astro-code-background: var(--paper-sunk);
-  --astro-code-token-keyword: var(--beet);
+  --astro-code-token-keyword: var(--stage-budding);
   --astro-code-token-string: var(--sage-deep);
   --astro-code-token-string-expression: var(--sage-deep);
   --astro-code-token-constant: var(--stage-seedling);
@@ -432,6 +434,6 @@ mark {
   --astro-code-token-punctuation: var(--ink);
   --astro-code-token-link: var(--ink);
   --astro-code-token-inserted: var(--sage-deep);
-  --astro-code-token-deleted: var(--beet);
+  --astro-code-token-deleted: var(--stage-seedling);
   --astro-code-token-changed: var(--stage-budding);
 }
