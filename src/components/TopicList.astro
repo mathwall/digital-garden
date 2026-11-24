@@ -1,0 +1,116 @@
+---
+/**
+ * Every topic of the garden as a list of whole-row links: vegetable tile,
+ * full topic name, note count, `beet` chevron. Sorted by note count, largest
+ * first (ties keep the `TOPICS` order). A new topic in `TOPICS` simply adds a
+ * row. The section head ("The garden" / "Wander by topic") is the page's.
+ * Ported from the design system (TopicList, `.mg-topics`).
+ */
+import { formatNoteCount, getTopicsWithCount } from "../lib/notes";
+import Icon from "./icons/Icon.astro";
+import Vegetable from "./icons/Vegetable.astro";
+
+const topics = (await getTopicsWithCount()).sort((a, b) => b.count - a.count);
+---
+
+<ul class="topics" role="list">
+  {
+    topics.map(({ topic, count }) => (
+      <li>
+        <a class="topic-row" href={`/${topic.slug}`}>
+          <span class="tile">
+            <Vegetable name={topic.vegetable} size={28} />
+          </span>
+          <span class="name">{topic.name}</span>
+          <span class="count">{formatNoteCount(count)}</span>
+          <Icon name="chevron" class="chev" size={20} />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .topics {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--measure);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .topic-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 64px;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .topics li:first-child .topic-row {
+    border-top: 1px solid var(--rule);
+  }
+
+  /* Vegetable tile, large (44px) */
+  .tile {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-tag);
+    background: var(--sage-tint);
+    color: var(--sage-deep);
+  }
+
+  .tile :global(svg) {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+  }
+
+  .name {
+    flex: 1;
+    min-width: 0;
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
+  }
+
+  .count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .chev {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--beet);
+    transition: transform 0.2s;
+  }
+
+  .topic-row:hover .name {
+    color: var(--beet);
+  }
+
+  .topic-row:hover .chev {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name,
+    .chev {
+      transition: none;
+    }
+  }
+</style>
