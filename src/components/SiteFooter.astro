@@ -1,0 +1,73 @@
+---
+/**
+ * The end of every page: the rain switch, three vegetables (chili outlined in
+ * `beet`, the one decorative exception), the © line with GitHub and LinkedIn,
+ * and the mono footnote. Ported from the design system (SiteFooter, `bundle.css`).
+ */
+import { SITE_TITLE, SOCIAL_LINKS } from "../consts";
+import RainSwitch from "./RainSwitch.astro";
+import Vegetable from "./icons/Vegetable.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <RainSwitch class="switch" />
+  <div class="veggies" aria-hidden="true">
+    <Vegetable name="chili" accent size={30} strokeWidth={1.6} />
+    <Vegetable name="blueberries" size={30} strokeWidth={1.6} />
+    <Vegetable name="mushroom" size={30} strokeWidth={1.6} />
+  </div>
+  <span>
+    &copy; {year}
+    {SITE_TITLE} · <a class="link" href={SOCIAL_LINKS.github}>GitHub</a> · <a
+      class="link"
+      href={SOCIAL_LINKS.linkedin}>LinkedIn</a
+    >
+  </span>
+  <span class="note">
+    Powered by Astro. Grown in Rennes, watered by the Breton rain.
+  </span>
+</footer>
+
+<style>
+  .footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px var(--space-4) 36px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--ink-muted);
+  }
+
+  .switch {
+    align-self: flex-start;
+    margin-bottom: 28px;
+  }
+
+  .veggies {
+    display: flex;
+    gap: 10px;
+    margin-bottom: var(--space-2);
+    color: var(--sage-deep);
+  }
+
+  .note {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--ink-muted);
+  }
+
+  @media (min-width: 960px) {
+    .footer {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-6) var(--space-7);
+    }
+  }
+</style>
