@@ -1,8 +1,8 @@
 ---
-title: Bob and Mike's famous Solid principles
+title: Bob and Mike's famous SOLID principles
 slug: clean-architecture-solid-principles
 publishDate: 17 Oct 2025
-description: A fresh attempt to finally engrave the meaning of each letter in this famous acronym
+description: A fresh attempt to finally engrave the meaning of each letter in this famous acronym.
 ---
 
 Another legacy from Uncle Bob! Robert Martin developed these principles in the 1080s and introduced them in 2000 in his paper [Design Principles and Design Patterns](https://www.fil.univ-lille.fr/~routier/enseignement/licence/coo/cours/Principles_and_Patterns.pdf).

@@ -2,7 +2,7 @@
 title: What is JavaScript, by the way?
 slug: what-is-js
 publishDate: 9 Jan 2026
-description: A reminder about what is JS and ECMAScript
+description: A reminder of what JavaScript and ECMAScript are.
 ---
 
 As I was looking for new things to learn, I found a book in my library: _You don't know JS Yet_ by Kyle Simpson. This book was a gift from my former co-worker, one of the most talented programmers I've worked with. I had only read some of the chapters since then! I decided to tackle it little by little, section by section and chapter by chapter, as it is very dense but full of valuable information.

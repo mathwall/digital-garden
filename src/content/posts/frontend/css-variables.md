@@ -2,7 +2,7 @@
 title: Understand CSS variables
 slug: css-variables
 publishDate: 29 Sept 2025
-description: Good-to-know things about CSS variables
+description: Good-to-know things about CSS variables.
 ---
 
 ## CSS variables are inheritable

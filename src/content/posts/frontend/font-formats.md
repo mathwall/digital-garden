@@ -2,7 +2,7 @@
 title: Which font format should I use for my website?
 slug: which-font-format-for-my-website
 publishDate: 26 Sept 2025
-description: A quick guide on font formats
+description: A quick guide on font formats.
 ---
 
 Choose WOFF2!

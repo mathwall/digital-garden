@@ -1,8 +1,8 @@
 ---
-title: CSS Transform Functions
+title: CSS transform functions
 slug: css-transform-functions
 publishDate: 9 Oct 2025
-description: A basic title for a basic post about basics on CSS transform functions
+description: A basic title for a basic post about basics on CSS transform functions.
 ---
 
 ```css

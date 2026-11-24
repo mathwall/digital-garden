@@ -2,7 +2,7 @@
 title: The programming paradigms that paved the way for Clean Architecture
 slug: clean-architecture-programming-paradigms
 publishDate: 16 Oct 2025
-description: A quick reminder about structured programming, object-oriented programming and functional programming
+description: A quick reminder about structured programming, object-oriented programming and functional programming.
 ---
 
 > A programming paradigm is an approach to solve a problem and structure the code, using a programming language.
