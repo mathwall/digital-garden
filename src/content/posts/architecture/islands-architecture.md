@@ -2,7 +2,6 @@
 title: What is Islands architecture?
 slug: islands-architecture
 publishDate: 7 Nov 2025
-stage: budding
 description: Not an architecture designed by someone working from an archipelago
 ---
 
