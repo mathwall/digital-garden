@@ -1,36 +1,42 @@
 ---
 /**
  * The top bar on every page: the plant logo with the handwritten name and the
- * job title (one link home, watering-can cursor), and one burger / close
- * button that opens the menu sheet: "The garden" (Home + one row per topic),
- * "Also in the shed" (pills), and the preferences (theme, rain).
+ * job title (one link home, watering-can cursor), then:
  *
- * Phone: the sheet opens full width under the bar. Desktop (960px+): a 400px
- * panel on the right, under the button. The sheet scrolls on its own when it
- * is taller than the viewport (the bar is sticky, so the page can't reveal it).
+ * - Phone (< 960px): one burger / close button that opens the menu sheet,
+ *   full width under the bar: "The garden" (Home + one row per topic),
+ *   "Also in the shed" (pills), and the preferences (theme, rain). The sheet
+ *   scrolls on its own when it is taller than the viewport (the bar is
+ *   sticky, so the page can't reveal it).
+ * - Desktop (960px+): the topics inline (full names, then a rule and "All
+ *   notes"), and a Preferences button (sliders) opening a 340px panel under
+ *   it with the theme and rain. No burger, no sheet.
  *
  * The `<header>` is a full-width band (background, hairline, shadow, slide);
  * its content (`.bar`) stays within `page-max` with the page gutters.
  *
  * Sticky on both breakpoints: it slides up out of view when scrolling down
  * and back when scrolling up (8px threshold), stays while within its own
- * height of the top, while the menu is open, or while it holds keyboard
- * focus. `data-floating` (scrolled at all) adds `shadow-lift`; `data-tucked`
+ * height of the top, while the menu or the preferences panel is open, or
+ * while it holds keyboard focus. `data-floating` (scrolled at all) adds `shadow-lift`; `data-tucked`
  * slides it away. `scroll-padding-top` on `html` (global.css) keeps anchor
  * and skip-link targets below it.
  *
- * Disclosure pattern: the button has `aria-expanded` / `aria-controls`; the
- * menu is `display: none` while closed, so it is out of the tab order. It
- * closes on a second tap, Escape (focus back on the button), a link tap, a
- * click outside the header, or when focus moves out of it.
+ * Disclosure pattern, same rules for the menu and the preferences panel:
+ * the button has `aria-expanded` / `aria-controls`; the panel is
+ * `display: none` while closed, so it is out of the tab order. It closes on
+ * a second tap, Escape (focus back on the button), a link tap (menu), a
+ * click outside the header, when focus moves out of it, or when the window
+ * crosses 960px.
  *
  * `current` (from the layouts): "" for home, a topic slug, "notes"; the
- * matching row or pill gets `aria-current` ("page" on that exact page,
- * "true" on a page inside the topic, e.g. a note).
+ * matching row, pill or desktop link gets `aria-current` ("page" on that
+ * exact page, "true" on a page inside the topic, e.g. a note).
  *
- * Markup and styles ported from the design system (SiteHeader, `bundle.css`).
+ * Markup and styles ported from the design system (SiteHeader, `bundle.css`)
+ * and the desktop mockups (MixedDesktopHome / MixedDesktopNote).
  */
-import { SOCIAL_LINKS } from "../consts";
+import { SOCIAL_LINKS, TOPICS } from "../consts";
 import { formatNoteCount, getTopicsWithCount } from "../lib/notes";
 import RainSwitch from "./RainSwitch.astro";
 import ThemeSelect from "./ThemeSelect.astro";
@@ -74,6 +80,14 @@ const rows = [
   })),
 ];
 
+/* Desktop: the topics inline in the bar, then "All notes" after a rule */
+const topLinks = TOPICS.map((topic) => ({
+  href: `/${topic.slug}`,
+  label: topic.name,
+  current: currentFor(`/${topic.slug}`, topic.slug),
+}));
+const allNotesCurrent = currentFor("/notes", "notes");
+
 const pills = [
   { href: "/notes", label: "all notes", current: currentFor("/notes", "notes") },
   { href: SOCIAL_LINKS.github, label: "GitHub" },
@@ -81,7 +95,12 @@ const pills = [
 ];
 ---
 
-<header class="header" data-open="false" data-site-header>
+<header
+  class="header"
+  data-open="false"
+  data-prefs-open="false"
+  data-site-header
+>
   <div class="bar">
     <a class="brand" href="/">
       <Plant class="plant" size={34} />
@@ -91,8 +110,43 @@ const pills = [
       </span>
     </a>
 
+    <nav class="topnav" aria-label="Topics">
+      <ul class="toplist" role="list">
+        {
+          topLinks.map((link) => (
+            <li>
+              <a class="toplink" href={link.href} aria-current={link.current}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="top-all">
+          <a class="toplink" href="/notes" aria-current={allNotesCurrent}>
+            All notes
+          </a>
+        </li>
+      </ul>
+    </nav>
+
     <button
-      class="iconbtn"
+      class="iconbtn prefs-btn"
+      type="button"
+      aria-label="Preferences"
+      aria-expanded="false"
+      aria-controls="site-prefs"
+      data-prefs-button
+    >
+      <Icon name="sliders" size={20} strokeWidth={1.6} />
+    </button>
+
+    <section class="prefs-panel" id="site-prefs" aria-label="Preferences">
+      <ThemeSelect labelId="prefs-theme-label" />
+      <RainSwitch variant="row" />
+    </section>
+
+    <button
+      class="iconbtn menu-btn"
       type="button"
       aria-label="Menu"
       aria-expanded="false"
@@ -149,48 +203,73 @@ const pills = [
 
 <script>
   const header = document.querySelector<HTMLElement>("[data-site-header]");
-  const button = header?.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const menuButton = header?.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const prefsButton = header?.querySelector<HTMLButtonElement>("[data-prefs-button]");
 
-  if (header && button) {
-    const isOpen = () => header.dataset.open === "true";
+  if (header && menuButton && prefsButton) {
+    // Two disclosures, same rules: the menu sheet (phone) and the
+    // preferences panel (desktop). Each one's state is a `data-*` flag on the
+    // header (CSS shows the panel from it) mirrored in its `aria-expanded`.
+    type Disclosure = { button: HTMLButtonElement; flag: "open" | "prefsOpen" };
+    const disclosures: Disclosure[] = [
+      { button: menuButton, flag: "open" },
+      { button: prefsButton, flag: "prefsOpen" },
+    ];
 
-    const setOpen = (open: boolean) => {
-      header.dataset.open = String(open);
-      button.setAttribute("aria-expanded", String(open));
+    const isOpen = (d: Disclosure) => header.dataset[d.flag] === "true";
+    const anyOpen = () => disclosures.some(isOpen);
+
+    const setOpen = (d: Disclosure, open: boolean) => {
+      header.dataset[d.flag] = String(open);
+      d.button.setAttribute("aria-expanded", String(open));
     };
 
-    button.addEventListener("click", () => setOpen(!isOpen()));
+    const closeAll = () => disclosures.forEach((d) => isOpen(d) && setOpen(d, false));
 
-    // Escape: close and put focus back on the button (the menu disappears).
+    // A second tap closes it; opening one closes the other.
+    for (const d of disclosures) {
+      d.button.addEventListener("click", () => {
+        const open = !isOpen(d);
+        closeAll();
+        setOpen(d, open);
+      });
+    }
+
+    // Escape: close and put focus back on its button (the panel disappears).
     document.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || !isOpen()) return;
-      setOpen(false);
-      button.focus();
+      const d = disclosures.find(isOpen);
+      if (event.key !== "Escape" || !d) return;
+      setOpen(d, false);
+      d.button.focus();
     });
 
-    // A link tap closes it (matters for same-page links, e.g. Home on home).
-    // Buttons (theme, rain) keep it open.
+    // A link tap closes the menu (matters for same-page links, e.g. Home on
+    // home). Buttons (theme, rain) keep it open.
     header.querySelector("#site-menu")?.addEventListener("click", (event) => {
       if (event.target instanceof Element && event.target.closest("a")) {
-        setOpen(false);
+        setOpen(disclosures[0], false);
       }
     });
 
-    // A click outside the header closes it.
+    // A click outside the header closes them.
     document.addEventListener("click", (event) => {
-      if (isOpen() && event.target instanceof Node && !header.contains(event.target)) {
-        setOpen(false);
+      if (anyOpen() && event.target instanceof Node && !header.contains(event.target)) {
+        closeAll();
       }
     });
 
-    // Tabbing out of the menu closes it, so it never covers the focused element.
-    // `relatedTarget` is null when Safari clicks a button: ignore that case.
+    // Tabbing out of the header closes them, so they never cover the focused
+    // element. `relatedTarget` is null when Safari clicks a button: ignore it.
     header.addEventListener("focusout", (event) => {
       const next = event.relatedTarget;
-      if (isOpen() && next instanceof Node && !header.contains(next)) {
-        setOpen(false);
+      if (anyOpen() && next instanceof Node && !header.contains(next)) {
+        closeAll();
       }
     });
+
+    // Crossing 960px hides one button and shows the other: close whatever
+    // was open, or its hidden panel would keep `aria-expanded` and pin the bar.
+    window.matchMedia("(min-width: 960px)").addEventListener("change", closeAll);
 
     // ---------- Hide on scroll down, show on scroll up ----------
     const THRESHOLD = 8;
@@ -218,7 +297,7 @@ const pills = [
       const max = document.documentElement.scrollHeight - window.innerHeight;
       // Clamp iOS rubber-banding (negative at the top, past the end at the bottom)
       const y = Math.min(Math.max(window.scrollY, 0), Math.max(max, 0));
-      const pinned = isOpen() || hasKeyboardFocus();
+      const pinned = anyOpen() || hasKeyboardFocus();
 
       setFlag("floating", y > 0);
 
@@ -545,23 +624,129 @@ const pills = [
     background: var(--paper-sunk);
   }
 
+  /* Desktop-only parts: hidden on phones */
+  .topnav,
+  .prefs-btn,
+  .prefs-panel {
+    display: none;
+  }
+
   @media (min-width: 960px) {
     /* Content within page-max, aligned with main and the footer */
     .bar {
       position: relative;
+      gap: var(--space-6);
       max-width: var(--page-max);
       margin: 0 auto;
       padding: 0 var(--space-6);
     }
 
-    /* The menu stays behind the button: a panel on the right instead of a
-       full-width sheet, just under the band's hairline */
+    .brand {
+      margin-right: 0;
+    }
+
+    /* No burger and no sheet: the topics sit in the bar */
+    .menu-btn,
     .header[data-open="true"] .menu {
+      display: none;
+    }
+
+    /* ---------- Topic nav, inline ---------- */
+    .topnav {
+      display: block;
+      margin-left: auto;
+    }
+
+    .toplist {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toplist li {
+      display: flex;
+      align-items: center;
+    }
+
+    /* A 1px rule between the topics and "All notes" */
+    .top-all::before {
+      content: "";
+      width: 1px;
+      height: 24px;
+      margin: 0 var(--space-2);
+      background: var(--rule);
+    }
+
+    .toplink {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--touch-target);
+      padding: 0 var(--space-3);
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .toplink:hover {
+      color: var(--beet);
+    }
+
+    /* The topic of this page or note, or "All notes" on /notes */
+    .toplink[aria-current] {
+      text-decoration: underline;
+      text-decoration-color: var(--sage-deep);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 8px;
+    }
+
+    /* ---------- Preferences button + panel ---------- */
+    .prefs-btn {
+      display: grid;
+    }
+
+    .prefs-btn[aria-expanded="true"] {
+      border-color: var(--beet);
+      color: var(--beet);
+    }
+
+    /* Under the band's hairline, right edge on the button's */
+    .header[data-prefs-open="true"] .prefs-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: absolute;
       top: calc(100% + 1px);
-      left: auto;
       right: var(--space-6);
-      width: 400px;
+      z-index: 10;
+      width: 340px;
+      box-sizing: border-box;
+      padding: 12px var(--space-4);
       border-radius: 0 0 var(--radius-card) var(--radius-card);
+      background: var(--paper-raised);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  /* Narrow desktops: brand + 5 links + button only just fit at 960px, so
+     tighten the spacing (never wrap) until there is room for the full one */
+  @media (min-width: 960px) and (max-width: 1099.98px) {
+    .bar {
+      gap: var(--space-4);
+    }
+
+    .toplink {
+      padding: 0 6px;
+    }
+
+    .top-all::before {
+      margin: 0 var(--space-1);
     }
   }
 </style>
