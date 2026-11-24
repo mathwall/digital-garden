@@ -1,0 +1,109 @@
+---
+/**
+ * A garden drawing on the 48px grid, stroked in `currentColor` so it follows
+ * the theme and the surrounding text colour. Paths copied verbatim from the
+ * design system (component previews, `assets/seedling.svg`, `assets/pea-pod.svg`).
+ *
+ * Stroke width by size (design system): 2.2 at 16px (tags), 2 at 26–28px
+ * (tiles), 1.6 at 30px (footer), 1.5 at 34px (ornament). A parent's CSS
+ * `stroke-width` overrides the `strokeWidth` attribute.
+ *
+ * Decorative: always `aria-hidden`; give the meaning in nearby text.
+ */
+import type { HTMLAttributes } from "astro/types";
+import type { VegetableName } from "../../consts";
+
+interface Props extends Omit<HTMLAttributes<"svg">, "name"> {
+  name: VegetableName;
+  /** Rendered width and height in px (CSS can override). */
+  size?: number;
+  strokeWidth?: number;
+  /** Chili only: outline the pod in `beet` (the footer's one exception). */
+  accent?: boolean;
+}
+
+const { name, size = 48, strokeWidth = 2, accent = false, ...attrs } =
+  Astro.props;
+const accentStyle = accent ? "stroke: var(--beet)" : undefined;
+---
+
+<svg
+  viewBox="0 0 48 48"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  {...attrs}
+>
+  {
+    name === "blueberries" && (
+      <>
+        <circle cx="16" cy="30" r="7" />
+        <circle cx="31" cy="27" r="7" />
+        <circle cx="24" cy="15" r="6" />
+        <path d="M14.5 26.5l1.5 1.5 1.5-1.5M29.5 23.5l1.5 1.5 1.5-1.5M22.5 11.5l1.5 1.5 1.5-1.5" />
+      </>
+    )
+  }
+  {
+    name === "beetroot" && (
+      <>
+        <path d="M24 20C14 20 12 30 18 36C21 39 24 44 24 44C24 44 27 39 30 36C36 30 34 20 24 20Z" />
+        <path d="M24 20C22 14 18 10 14 8M24 20C24 13 26 8 30 5M24 20C27 15 32 13 36 13" />
+        <path d="M20 28C21 31 22 33 24 35" />
+      </>
+    )
+  }
+  {
+    name === "chili" && (
+      <>
+        <path d="M15 16C15 27 21 38 35 42C29 34 27 24 27 16Z" style={accentStyle} />
+        <path d="M15 16H27" />
+        <path d="M21 16V11C21 8.5 23 7 26 7" />
+        <path d="M19 22C19.5 27 22 32 26 35" />
+      </>
+    )
+  }
+  {
+    name === "mushroom" && (
+      <>
+        <path d="M8 25C8 15 16 9 24 9C32 9 40 15 40 25Z" />
+        <path d="M19 25V37C19 40 29 40 29 37V25" />
+        <circle cx="17" cy="18" r="2" />
+        <circle cx="27" cy="15" r="1.6" />
+        <circle cx="33" cy="20" r="1.8" />
+      </>
+    )
+  }
+  {
+    name === "pea-pod" && (
+      <>
+        <path d="M6 30C14 40 34 40 42 22C34 30 14 32 6 30Z" />
+        <circle cx="16" cy="32.5" r="3" />
+        <circle cx="24" cy="32" r="3" />
+        <circle cx="32" cy="29.5" r="3" />
+        <path d="M42 22C43 18 41.5 15 38.5 14" />
+      </>
+    )
+  }
+  {
+    name === "seedling" && (
+      <>
+        <path d="M24 44V22" />
+        <path d="M24 30C24 24 28 20 36 19C36 25 32 29 24 30Z" />
+        <path d="M24 36C24 31 20 27 12 26C12 32 16 35 24 36Z" />
+        <path d="M24 22C21 18.5 21 14 24 9C27 14 27 18.5 24 22Z" />
+      </>
+    )
+  }
+  {
+    name === "gate" && (
+      <path d="M8 42V18M40 42V18M8 18Q24 6 40 18M15 42V21M21 42V18.5M27 42V18.5M33 42V21M8 30H40" />
+    )
+  }
+</svg>

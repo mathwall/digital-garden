@@ -1,0 +1,81 @@
+---
+/**
+ * Interface line icons (burger, close, chevron, arrow, rain cloud, umbrellas),
+ * stroked in `currentColor`. Paths copied verbatim from the design system
+ * component previews (SiteHeader, TopicList, NoteCard, RainSwitch).
+ *
+ * Default stroke 1.8, as `.mg-ic` in `bundle.css`; a parent's CSS
+ * `stroke-width` overrides the `strokeWidth` attribute.
+ *
+ * Decorative: always `aria-hidden`; label the button or link instead.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+type IconName = (typeof ICON_NAMES)[number];
+const ICON_NAMES = [
+  "burger",
+  "close",
+  "chevron",
+  "arrow-up-right",
+  "rain-cloud",
+  "umbrella-open",
+  "umbrella-closed",
+] as const;
+
+interface Props extends Omit<HTMLAttributes<"svg">, "name"> {
+  name: IconName;
+  /** Rendered width and height in px (CSS can override). */
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { name, size = 24, strokeWidth = 1.8, ...attrs } = Astro.props;
+// The open umbrella is drawn on a 32px grid, every other icon on 24px.
+const viewBox = name === "umbrella-open" ? "0 0 32 32" : "0 0 24 24";
+---
+
+<svg
+  viewBox={viewBox}
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  {...attrs}
+>
+  {name === "burger" && <path d="M4 7h16M4 12h16M4 17h16" />}
+  {name === "close" && <path d="M6 6l12 12M18 6L6 18" />}
+  {name === "chevron" && <path d="M9 6l6 6-6 6" />}
+  {name === "arrow-up-right" && <path d="M7 17L17 7M9 7h8v8" />}
+  {
+    name === "rain-cloud" && (
+      <>
+        <path d="M7 15.5a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 8.3a3.6 3.6 0 0 1 .4 7.2Z" />
+        <path d="M8.5 18.5l-1 2.5M12.5 18.5l-1 2.5M16.5 18.5l-1 2.5" />
+      </>
+    )
+  }
+  {
+    name === "umbrella-open" && (
+      <>
+        <path d="M22 25a3 3 0 0 1-6 0v-8" />
+        <path d="M4 17a1 1 0 0 1-1-1.1 13 13 0 0 1 26 0 1 1 0 0 1-1 1.1L16 16Z" />
+        <path d="M11 16c0-9 5-12 5-12s5 2.5 5 11.5" />
+      </>
+    )
+  }
+  {
+    name === "umbrella-closed" && (
+      <>
+        <path d="M12 2.5V4.5" />
+        <path d="M12 4.5L15 15H9Z" />
+        <path d="M12 4.5L13 15" />
+        <path d="M12 15v4.5a2 2 0 0 1-4 0" />
+      </>
+    )
+  }
+</svg>
