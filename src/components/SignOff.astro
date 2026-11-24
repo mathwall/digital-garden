@@ -1,0 +1,112 @@
+---
+/**
+ * "Why a digital garden?": a `sage-tint` block near the end of the home page,
+ * closed by a small signature (the illustrated avatar, 52px round with a 2px
+ * `sage-deep` ring; "Mathilde" handwritten; the job title; "More about me").
+ * The only place the avatar appears. Text from the "Mixed" home mockup.
+ * Ported from the design system (SignOff, `.mg-why` / `.mg-signoff`).
+ */
+---
+
+<section class="why" aria-labelledby="why-heading">
+  <h2 id="why-heading">Why a digital garden?</h2>
+  <p>
+    I built this site to reach my programming notes from anywhere, and to
+    experiment with CSS for fun. Notes start as seedlings and grow as I come
+    back to them.
+  </p>
+  <div class="signoff">
+    <img
+      class="avatar"
+      src="/assets/avatar.svg"
+      alt="Illustrated portrait of Mathilde"
+      width="52"
+      height="52"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="signoff-txt">
+      <span class="name">Mathilde</span>
+      <span class="job">full-stack product engineer</span>
+      <a class="link about" href="/about">More about me</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--measure);
+    padding: 22px 20px;
+    border-radius: var(--radius-card);
+    background: var(--sage-tint);
+  }
+
+  h2 {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--ink);
+  }
+
+  .signoff {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: 6px;
+  }
+
+  .avatar {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    background: var(--paper-raised);
+    border: 2px solid var(--sage-deep);
+  }
+
+  .signoff-txt {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .name {
+    font-family: var(--font-signature);
+    font-size: 26px;
+    line-height: 32px;
+    color: var(--sage-deep);
+  }
+
+  .job {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: var(--ink-muted);
+  }
+
+  /* `.link` (global) gives the colour and underline */
+  .about {
+    position: relative;
+    align-self: flex-start;
+    padding: 4px 0;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  /* Tap area stretched to the 44px touch target without moving the text */
+  .about::after {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
+  }
+</style>
