@@ -1,25 +1,18 @@
 ---
-import { getCollection } from "astro:content";
-import Blog from "../../components/blog/index.astro";
+import NoteListPage from "../../components/NoteListPage.astro";
+import { getTopic } from "../../consts";
+import { getNotes } from "../../lib/notes";
 
-const title = "Frontend";
-const description = "Latest articles.";
-const permalink = `${Astro.site!.href}frontend`;
-const current = "frontend";
-
-let allPosts = await getCollection("frontendPosts");
-allPosts = allPosts.sort(
-  (a, b) =>
-    new Date(b.data.publishDate).valueOf() -
-    new Date(a.data.publishDate).valueOf()
-);
+const topic = getTopic("frontend")!;
+const notes = await getNotes(topic);
 ---
 
-<Blog
-  pageTitle="Frontend"
-  title={title}
-  description={description}
-  permalink={permalink}
-  current={current}
-  posts={allPosts}
+<NoteListPage
+  title={topic.name}
+  description={`Notes on ${topic.name}, newest first.`}
+  permalink={`${Astro.site!.href}${topic.slug}`}
+  current={topic.slug}
+  label="The garden"
+  pageTitle={topic.name}
+  notes={notes}
 />

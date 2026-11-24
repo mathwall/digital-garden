@@ -1,0 +1,65 @@
+---
+/**
+ * A page listing notes as NoteCards: mono label, page title (`h1`), note
+ * count, then the cards (newest first, as given). Used by the topic pages
+ * and `/notes`.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NoteCardList from "./NoteCardList.astro";
+import { formatNoteCount, type Note } from "../lib/notes";
+
+export interface Props {
+  /** `<title>` and meta description */
+  title: string;
+  description: string;
+  permalink: string;
+  /** Menu section to highlight: a topic slug, or "notes" */
+  current?: string;
+  /** Mono label above the page title */
+  label: string;
+  /** The page's `h1` */
+  pageTitle: string;
+  notes: Note[];
+}
+
+const { title, description, permalink, current, label, pageTitle, notes } =
+  Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  permalink={permalink}
+  current={current}
+>
+  <div class="page">
+    <header class="page-head">
+      <p class="label">{label}</p>
+      <h1>{pageTitle}</h1>
+      <p class="count">{formatNoteCount(notes.length)}</p>
+    </header>
+    <NoteCardList notes={notes} headingLevel={2} />
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .page-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  /* Counts are mono, `ink-muted`, like the topic list's */
+  .count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink-muted);
+  }
+</style>
