@@ -1,0 +1,16 @@
+---
+import NoteListPage from "../components/NoteListPage.astro";
+import { getNotes } from "../lib/notes";
+
+const notes = await getNotes();
+---
+
+<NoteListPage
+  title="All notes"
+  description="Every note of the garden, newest first."
+  permalink={`${Astro.site!.href}notes`}
+  current="notes"
+  label="From the notebook"
+  pageTitle="All notes"
+  notes={notes}
+/>
