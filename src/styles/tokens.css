@@ -1,0 +1,90 @@
+/*
+  Design tokens — "Beetroot & sage" (design system "Mathilde Sauvage", v3).
+  Light theme on :root, dark theme on :root.theme-dark (class set by the inline script in BaseHead).
+  Green (`sage-deep`) is identity; `beet` marks only what can be tapped.
+  Breakpoint `bp-desktop` = 960px: custom properties can't be used in media queries,
+  so write `@media (min-width: 960px)` by hand.
+*/
+
+:root {
+  /* Colour — Daylight */
+  --paper: #f6f1ea;
+  --paper-raised: #fffaf5;
+  --paper-sunk: #ede5da;
+  --sage-tint: #e0e7d6;
+  --highlight: #f2dc8c;
+  --ink: #1f1a1c;
+  --ink-muted: #5e5652;
+  --rule: #e3d8cc;
+  --border-control: #877b74;
+  --sage: #8d9263;
+  --sage-deep: #37573a;
+  --on-sage-deep: #fffaf5;
+  --beet: #a3245a;
+  --on-beet: #fffaf5;
+  --beet-soft: #f2c2d3;
+  --rain: #83b4c3;
+  --stage-seedling: #855800;
+  --stage-budding: #2b6a7c;
+  --stage-evergreen: var(--sage-deep);
+  --focus: var(--beet);
+
+  /* Type families */
+  --font-sans: Figtree, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-signature: "Cedarville Cursive", cursive;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 72px;
+
+  /* Radius */
+  --radius-sm: 3px;
+  --radius-tag: 4px;
+  --radius-md: 6px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-lift: 0 1px 2px rgba(31, 26, 28, 0.06), 0 8px 24px rgba(31, 26, 28, 0.1);
+
+  /* Layout */
+  --measure: 680px;
+  --page-max: 1120px;
+  --touch-target: 44px;
+  --header-height: 68px;
+
+  color-scheme: light;
+}
+
+:root.theme-dark {
+  /* Colour — Night garden */
+  --paper: #181418;
+  --paper-raised: #211b21;
+  --paper-sunk: #110e11;
+  --sage-tint: #22302a;
+  --highlight: #4d4112;
+  --ink: #f2e9ec;
+  --ink-muted: #b9adb1;
+  --rule: #30282f;
+  --border-control: #827780;
+  --sage: #8d9263;
+  --sage-deep: #a7cfa0;
+  --on-sage-deep: #181418;
+  --beet: #ff8fbd;
+  --on-beet: #181418;
+  --beet-soft: #5b1f38;
+  --rain: #83b4c3;
+  --stage-seedling: #e2b65c;
+  --stage-budding: #83b4c3;
+
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
