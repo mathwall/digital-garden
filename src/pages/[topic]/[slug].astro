@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import TopicTag from "../../components/TopicTag.astro";
+import Icon from "../../components/icons/Icon.astro";
 import {
   formatNoteDate,
   getNotes,
@@ -56,6 +57,15 @@ const { Content } = await render(note.entry);
     <div class="prose">
       <Content />
     </div>
+    <footer class="note-end">
+      <a class="link back" href={`/${note.topic.slug}`}>
+        <Icon name="chevron-left" size={20} />
+        All {note.topic.name} notes
+      </a>
+      <span class="planted">
+        Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
+      </span>
+    </footer>
   </article>
 </BaseLayout>
 
@@ -85,6 +95,39 @@ const { Content } = await render(note.entry);
     content: "·";
     content: "·" / "";
     margin-right: var(--space-3);
+  }
+
+  /* The end of the note: back to its topic, and when it was planted */
+  .note-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--space-4);
+    margin-top: var(--space-7);
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* `.link` (global) gives the colour and underline; 44px tap height */
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-target);
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .back :global(svg) {
+    flex: none;
+  }
+
+  .planted {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--ink-muted);
   }
 
   @media (min-width: 960px) {
