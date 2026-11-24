@@ -25,7 +25,7 @@ export type VegetableName =
 
 /**
  * The topics of the garden, in menu order.
- * - `slug`: URL segment (`/frontend`, `/frontend/<note>`) and page folder.
+ * - `slug`: URL segment (`/frontend`, `/frontend/<note>`), routed by `pages/[topic]/`.
  * - `name`: full name (topic list, menu, topic page title).
  * - `shortName`: name in the TopicTag on note cards.
  * - `collection`: content collection holding the topic's notes.

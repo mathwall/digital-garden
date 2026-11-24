@@ -1,9 +1,17 @@
 ---
 import NoteListPage from "../../components/NoteListPage.astro";
-import { getTopic } from "../../consts";
+import { TOPICS, type Topic } from "../../consts";
 import { getNotes } from "../../lib/notes";
 
-const topic = getTopic("frontend")!;
+/** One page per topic of `TOPICS`: `/frontend`, `/architecture`, … */
+export function getStaticPaths() {
+  return TOPICS.map((topic) => ({
+    params: { topic: topic.slug },
+    props: { topic },
+  }));
+}
+
+const { topic } = Astro.props as { topic: Topic };
 const notes = await getNotes(topic);
 ---
 
