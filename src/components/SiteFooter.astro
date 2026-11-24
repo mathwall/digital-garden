@@ -2,7 +2,8 @@
 /**
  * The end of every page: the rain switch, three vegetables (chili outlined in
  * `beet`, the one decorative exception), the © line with GitHub and LinkedIn,
- * and the mono footnote. Ported from the design system (SiteFooter, `bundle.css`).
+ * and the mono footnote. The hairline runs edge to edge; the content
+ * (`.footer-in`) stays within `page-max`. Ported from the design system (SiteFooter, `bundle.css`).
  */
 import { SITE_TITLE, SOCIAL_LINKS } from "../consts";
 import RainSwitch from "./RainSwitch.astro";
@@ -12,35 +13,41 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <RainSwitch class="switch" />
-  <div class="veggies" aria-hidden="true">
-    <Vegetable name="chili" accent size={30} strokeWidth={1.6} />
-    <Vegetable name="blueberries" size={30} strokeWidth={1.6} />
-    <Vegetable name="mushroom" size={30} strokeWidth={1.6} />
+  <div class="footer-in">
+    <RainSwitch class="switch" />
+    <div class="veggies" aria-hidden="true">
+      <Vegetable name="chili" accent size={30} strokeWidth={1.6} />
+      <Vegetable name="blueberries" size={30} strokeWidth={1.6} />
+      <Vegetable name="mushroom" size={30} strokeWidth={1.6} />
+    </div>
+    <span>
+      &copy; {year}
+      {SITE_TITLE} · <a class="link" href={SOCIAL_LINKS.github}>GitHub</a> · <a
+        class="link"
+        href={SOCIAL_LINKS.linkedin}>LinkedIn</a
+      >
+    </span>
+    <span class="note">
+      Powered by Astro. Grown in Rennes, watered by the Breton rain.
+    </span>
   </div>
-  <span>
-    &copy; {year}
-    {SITE_TITLE} · <a class="link" href={SOCIAL_LINKS.github}>GitHub</a> · <a
-      class="link"
-      href={SOCIAL_LINKS.linkedin}>LinkedIn</a
-    >
-  </span>
-  <span class="note">
-    Powered by Astro. Grown in Rennes, watered by the Breton rain.
-  </span>
 </footer>
 
 <style>
+  /* The band: the hairline runs edge to edge */
   .footer {
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    box-sizing: border-box;
-    padding: 20px var(--space-4) 36px;
     border-top: 1px solid var(--rule);
     font-size: 14px;
     line-height: 20px;
     color: var(--ink-muted);
+  }
+
+  .footer-in {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 20px var(--space-4) 36px;
   }
 
   .switch {
@@ -64,7 +71,8 @@ const year = new Date().getFullYear();
   }
 
   @media (min-width: 960px) {
-    .footer {
+    /* Content within page-max, aligned with the header and main */
+    .footer-in {
       max-width: var(--page-max);
       margin: 0 auto;
       padding: var(--space-5) var(--space-6) var(--space-7);
