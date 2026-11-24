@@ -1,9 +1,11 @@
 ---
 /**
- * The end of every page: the rain switch, three vegetables (chili outlined in
- * `beet`, the one decorative exception), the © line with GitHub and LinkedIn,
- * and the mono footnote. The hairline runs edge to edge; the content
- * (`.footer-in`) stays within `page-max`. Ported from the design system (SiteFooter, `bundle.css`).
+ * The end of every page: the rain switch, three vegetables (chili outlined
+ * in `beet`, the one decorative exception), the © line with GitHub and
+ * LinkedIn, and the mono footnote. Desktop: one row, the switch on the
+ * right. The hairline runs edge to edge; the content (`.footer-in`) stays
+ * within `page-max`. Ported from the design system (SiteFooter,
+ * `bundle.css`) and the desktop mockups.
  */
 import { SITE_TITLE, SOCIAL_LINKS } from "../consts";
 import RainSwitch from "./RainSwitch.astro";
@@ -20,7 +22,7 @@ const year = new Date().getFullYear();
       <Vegetable name="blueberries" size={30} strokeWidth={1.6} />
       <Vegetable name="mushroom" size={30} strokeWidth={1.6} />
     </div>
-    <span>
+    <span class="copy">
       &copy; {year}
       {SITE_TITLE} · <a class="link" href={SOCIAL_LINKS.github}>GitHub</a> · <a
         class="link"
@@ -70,12 +72,40 @@ const year = new Date().getFullYear();
     color: var(--ink-muted);
   }
 
+  /* Desktop: one row, vegetables + © line + footnote on the left, the rain
+     switch on the right, bottoms aligned. Content within page-max, aligned
+     with the header and main. */
   @media (min-width: 960px) {
-    /* Content within page-max, aligned with the header and main */
     .footer-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "veggies switch"
+        "copy switch"
+        "note switch";
+      align-items: end;
+      column-gap: var(--space-6);
       max-width: var(--page-max);
       margin: 0 auto;
       padding: var(--space-5) var(--space-6) var(--space-7);
+    }
+
+    .switch {
+      grid-area: switch;
+      align-self: end;
+      margin-bottom: 0;
+    }
+
+    .veggies {
+      grid-area: veggies;
+    }
+
+    .copy {
+      grid-area: copy;
+    }
+
+    .note {
+      grid-area: note;
     }
   }
 </style>
