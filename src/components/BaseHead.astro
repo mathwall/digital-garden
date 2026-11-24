@@ -18,6 +18,15 @@ const socialUrl = Astro.site!.href + "assets/social.png";
 <meta name="viewport" content="width=device-width" />
 <link rel="icon" type="image/x-icon" href="/assets/plant.svg" />
 
+<!-- Fonts: self-hosted (see src/styles/fonts.css); preload the text face -->
+<link
+  rel="preload"
+  href="/assets/fonts/Figtree-Variable.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+
 <!-- Analytics -->
 {
   import.meta.env.PROD && (
