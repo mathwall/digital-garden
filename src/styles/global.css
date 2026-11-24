@@ -245,23 +245,48 @@ mark {
   color: var(--ink);
 }
 
-/* Code blocks (CodeBlock, `.mg-code`): Shiki's `css-variables` theme
-   (astro.config.mjs) colours each token with `var(--astro-code-*)`, mapped
-   to the tokens in "Code colours" below. A recessed band that bleeds to
-   the screen edges on phones (cancels main's `space-4` gutters), a bordered
-   box within `measure` on desktop. Long lines scroll sideways. */
-.prose pre {
+/* Code blocks (CodeBlock, `.mg-code`): a Shiki transformer
+   (astro.config.mjs) wraps each `<pre>` in `<figure class="code">` with a
+   `<figcaption>` naming the language (none for plain text). Shiki's
+   `css-variables` theme colours each token with `var(--astro-code-*)`,
+   mapped to the tokens in "Code colours" below. A recessed band that bleeds
+   to the screen edges on phones (cancels main's `space-4` gutters), a
+   bordered box within `measure` on desktop. Long lines scroll sideways. */
+.prose .code {
   margin-left: calc(-1 * var(--space-4));
   margin-right: calc(-1 * var(--space-4));
-  margin-bottom: 0;
-  padding: var(--space-4);
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   background: var(--paper-sunk);
+  overflow: hidden;
+}
+
+/* The language, top right (`.mg-code__file`) */
+.prose .code figcaption {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.prose .code pre {
+  margin: 0;
+  padding: var(--space-4);
   color: var(--ink);
   overflow-x: auto;
   font-size: 14px;
   line-height: 22px;
+}
+
+/* Shiki's `<pre>` is focusable (`tabindex="0"`, to scroll it by keyboard):
+   draw the ring inside, as the figure clips what overflows it */
+.prose .code pre:focus-visible {
+  outline-offset: -4px;
 }
 
 .prose pre [style*="--astro-code-token-comment"] {
@@ -372,11 +397,14 @@ mark {
     line-height: 34px;
   }
 
-  .prose pre {
+  .prose .code {
     margin-left: 0;
     margin-right: 0;
     border: 1px solid var(--rule);
     border-radius: var(--radius-md);
+  }
+
+  .prose .code pre {
     font-size: 15px;
     line-height: 24px;
   }
