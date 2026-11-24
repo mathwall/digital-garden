@@ -8,8 +8,11 @@ export interface Props {
   description: string;
   permalink: string;
   current?: string;
+  /** Desktop (960px+): let the page use the whole `page-max` width (it lays
+      out its own columns). Below 960px the column stays `measure` wide. */
+  wide?: boolean;
 }
-const { title, description, permalink, current } = Astro.props;
+const { title, description, permalink, current, wide = false } = Astro.props;
 ---
 
 <html lang="en">
@@ -26,7 +29,7 @@ const { title, description, permalink, current } = Astro.props;
       <SiteHeader current={current} />
 
       <main id="content" tabindex="-1">
-        <div class="column">
+        <div class:list={["column", wide && "column--wide"]}>
           <slot />
         </div>
       </main>
@@ -96,6 +99,10 @@ const { title, description, permalink, current } = Astro.props;
   @media (min-width: 960px) {
     main {
       padding: var(--space-6) var(--space-6) var(--space-8);
+    }
+
+    .column--wide {
+      max-width: none;
     }
   }
 </style>
