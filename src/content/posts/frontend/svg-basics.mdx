@@ -6,30 +6,30 @@ stage: budding
 description: The very basics of SVG
 ---
 
-# What is svg?
+## What is svg?
 
 Scalable Vector Graphics is a graphics language based on XML (like HTML). It allows you to create images.
 The first public draft of SVG was released by the World Wide Web consortium in 1999.
 
-# Why is it cool?
+## Why is it cool?
 
-## It is scalable
+### It is scalable
 
 As the name suggests, it means that SVG can be scaled to fit the resolution of different display devices without pixelation, unlike bitmap-based image formats.
 
-## It can be interactive
+### It can be interactive
 
 Since HTML5, you can write inline SVG directly inside an HTML file. This allows you to style it with CSS and animate it with pure CSS or JavaScript.
 
-## It is lightweight
+### It is lightweight
 
 Compared to other conventional image formats like JPEG, GIF, and PNG, SVG files are much smaller. Moreover, the graphics are constructed by the browser itself, which reduces server load and network response time typically associated with web imagery.
 
-# How to write an svg?
+## How to write an svg?
 
-## SVG tag properties
+### SVG tag properties
 
-### width / height
+#### width / height
 
 `width` and `height` properties define how much space the svg image takes up in the browser.
 
@@ -37,7 +37,7 @@ Without further properties, the coordinate system for the image is derived from 
 
 It is set in pixels by default.
 
-### viewBox
+#### viewBox
 
 The `viewBox` property takes 4 numbers :
 
@@ -94,7 +94,7 @@ With `viewBox="0 0 200 200"`, we get a 20\*20px rectangle instead:
   <rect x="0" y="0" width="20" height="20" fill="black" />
 </svg>
 
-### xmlns (XML namespace)
+#### xmlns (XML namespace)
 
 The `xmlns` attribute tells the browser: "This is SVG, not some other XML format."
 
@@ -105,7 +105,7 @@ In any other case, it's recommended to include it.
 
 The URL (`http://www.w3.org/2000/svg`) is just a unique identifier—it's not actually visited. It's used because URLs are guaranteed to be unique across the internet, making them perfect for namespacing.
 
-## Learn more
+### Learn more
 
 Now that you know what is svg and how to create one, you can start learning about how to draw shapes in it: here is [my cheatsheet](/frontend/svg-shapes).
 
