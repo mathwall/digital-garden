@@ -2,7 +2,7 @@
 title: How to easily deploy your app to the internet
 slug: easily-deploy-your-app
 publishDate: 26 Sept 2025
-description: Some feedback on my experience deploying this blog
+description: Some feedback on my experience deploying this blog.
 ---
 
 I wanted to test several ways to deploy a simple app and train myself a bit on CI/CD.

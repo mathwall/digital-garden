@@ -2,7 +2,7 @@
 title: "The power of Maps: stop using Objects for everything!"
 slug: map-vs-object
 publishDate: 12 Jan 2026
-description: Some basics about what a Map is and when to use it
+description: Some basics about what a Map is and when to use it.
 ---
 
 I could store key-value pairs in a simple Object. I can retrieve those values, delete keys, and detect whether something is stored at a key. So why the hell should I use a Map instead of an Object???

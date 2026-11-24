@@ -1,8 +1,8 @@
 ---
-title: What is Islands architecture?
+title: What is islands architecture?
 slug: islands-architecture
 publishDate: 7 Nov 2025
-description: Not an architecture designed by someone working from an archipelago
+description: Not an architecture designed by someone working from an archipelago.
 ---
 
 I built this website with [Astro](https://astro.build/).
