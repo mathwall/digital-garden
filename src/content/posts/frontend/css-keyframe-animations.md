@@ -2,6 +2,7 @@
 title: Create cool animations with keyframes!
 slug: css-keyframe-animations
 publishDate: 29 Sept 2025
+stage: budding
 description: How to use CSS keyframe animations
 ---
 

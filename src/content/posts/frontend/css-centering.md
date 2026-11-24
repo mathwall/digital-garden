@@ -2,6 +2,7 @@
 title: How to center an element with position layout
 slug: css-centering-trick
 publishDate: 9 Oct 2025
+stage: budding
 description: A cool trick to easily center elements that have position absolute
 ---
 

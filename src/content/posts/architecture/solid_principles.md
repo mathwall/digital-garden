@@ -2,6 +2,7 @@
 title: Bob and Mike's famous Solid principles
 slug: clean-architecture-solid-principles
 publishDate: 17 Oct 2025
+stage: budding
 description: A fresh attempt to finally engrave the meaning of each letter in this famous acronym
 ---
 

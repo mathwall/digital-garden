@@ -2,6 +2,7 @@
 title: CSS Transform Functions
 slug: css-transform-functions
 publishDate: 9 Oct 2025
+stage: seedling
 description: A basic title for a basic post about basics on CSS transform functions
 ---
 

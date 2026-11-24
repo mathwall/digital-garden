@@ -2,6 +2,7 @@
 title: The programming paradigms that paved the way for Clean Architecture
 slug: clean-architecture-programming-paradigms
 publishDate: 16 Oct 2025
+stage: budding
 description: A quick reminder about structured programming, object-oriented programming and functional programming
 ---
 
