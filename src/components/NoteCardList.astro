@@ -1,0 +1,32 @@
+---
+/**
+ * A list of NoteCards, in the order given (pass `getNotes()` for newest
+ * first). Ported from the design system (`.mg-cards`).
+ */
+import type { Note } from "../lib/notes";
+import NoteCard from "./NoteCard.astro";
+
+export interface Props {
+  notes: Note[];
+  /** Passed to each NoteCard: 3 under a section `h2`, 2 under the page `h1`. */
+  headingLevel?: 2 | 3;
+}
+
+const { notes, headingLevel = 3 } = Astro.props;
+---
+
+<ul class="cards" role="list">
+  {notes.map((note) => <NoteCard note={note} headingLevel={headingLevel} />)}
+</ul>
+
+<style>
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: var(--measure);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

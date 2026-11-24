@@ -1,0 +1,46 @@
+---
+/**
+ * A note's topic as a small tag: the topic's vegetable, then its short name
+ * ("JavaScript", not "JavaScript / TypeScript"), in IBM Plex Mono, `sage-deep`
+ * on `sage-tint`. Not a link on its own (on a card, the whole card is), so
+ * never in `beet`. Ported from the design system (TopicTag, `.mg-topic`).
+ */
+import type { HTMLAttributes } from "astro/types";
+import type { Topic } from "../consts";
+import Vegetable from "./icons/Vegetable.astro";
+
+interface Props extends HTMLAttributes<"span"> {
+  topic: Topic;
+}
+
+const { topic, class: className, ...attrs } = Astro.props;
+---
+
+<span class:list={["topic-tag", className]} {...attrs}>
+  <Vegetable name={topic.vegetable} size={16} strokeWidth={2.2} />
+  {topic.shortName}
+</span>
+
+<style>
+  .topic-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-tag);
+    background: var(--sage-tint);
+    color: var(--sage-deep);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+  }
+
+  .topic-tag :global(svg) {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    stroke-width: 2.2;
+  }
+</style>

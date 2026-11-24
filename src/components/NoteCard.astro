@@ -1,0 +1,138 @@
+---
+/**
+ * One note as a card: TopicTag top left, read time + ↗ arrow top right (in
+ * `beet`, the card's accent at rest), title, one-sentence summary (the note's
+ * `description`). The whole card is the link: the title link's `::after`
+ * covers it. Hover / focus: border and title turn `beet`, the arrow nudges up
+ * and right; keyboard focus rings the whole card.
+ *
+ * Renders an `<li>`: put it in a `<ul>` (use `NoteCardList`, which also
+ * spaces the cards). No date, image, growth stage or second link on purpose.
+ * Ported from the design system (NoteCard, `.mg-card`).
+ */
+import type { Note } from "../lib/notes";
+import TopicTag from "./TopicTag.astro";
+import Icon from "./icons/Icon.astro";
+
+export interface Props {
+  note: Note;
+  /** Level of the title heading: 3 under a section `h2` (home), 2 under the page `h1`. */
+  headingLevel?: 2 | 3;
+}
+
+const { note, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+
+<li class="card">
+  <div class="card-top">
+    <TopicTag topic={note.topic} />
+    <span class="time">
+      {note.readingTime}
+      <Icon name="arrow-up-right" class="arrow" size={18} />
+    </span>
+  </div>
+  <Heading class="title"><a href={note.href}>{note.entry.data.title}</a></Heading>
+  <p class="summary">{note.entry.data.description}</p>
+</li>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 18px 18px var(--space-4);
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    transition: border-color 0.2s;
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--beet);
+  }
+
+  /* Keyboard focus rings the whole card instead of the title (browsers
+     without :has() keep the global ring on the title link) */
+  @supports selector(:has(a)) {
+    .card:has(.title a:focus-visible) {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .title a:focus-visible {
+      outline: none;
+    }
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--beet);
+    white-space: nowrap;
+  }
+
+  .arrow {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s;
+  }
+
+  .card:hover .arrow,
+  .card:focus-within .arrow {
+    transform: translate(3px, -3px);
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .title a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  /* The title link covers the whole card */
+  .title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+  }
+
+  .card:hover .title a,
+  .card:focus-within .title a {
+    color: var(--beet);
+  }
+
+  .summary {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--ink-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .arrow,
+    .title a {
+      transition: none;
+    }
+  }
+</style>
