@@ -8,14 +8,23 @@
  * the visitor picks one. The buttons render unpressed and the script reads the
  * class `BaseHead` already set, so they never disagree with the page.
  *
+ * Can appear more than once on a page (phone menu, desktop preferences
+ * panel): give each extra one its own `labelId`. One script drives them all.
+ *
  * Markup and styles ported from the design system (SiteHeader `.mg-pref`,
  * `.mg-seg`, `bundle.css`).
  */
+interface Props {
+  /** `id` of the visible "Theme" label, unique on the page. */
+  labelId?: string;
+}
+
+const { labelId = "theme-label" } = Astro.props;
 ---
 
 <div class="pref">
-  <span id="theme-label">Theme</span>
-  <div class="seg" role="group" aria-labelledby="theme-label">
+  <span id={labelId}>Theme</span>
+  <div class="seg" role="group" aria-labelledby={labelId}>
     <button type="button" aria-pressed="false" data-theme-choice="light">
       light
     </button>
