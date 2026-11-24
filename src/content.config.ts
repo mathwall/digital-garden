@@ -8,13 +8,8 @@ const noteSchema = z.object({
   publishDate: z.union([z.string(), z.date()]),
   /** Last meaningful change ("Tended" on the note page); same formats as `publishDate`. */
   updatedDate: z.union([z.string(), z.date()]).optional(),
-  /** How much the reader can trust the note right now (see the growth stages guide). */
-  stage: z.enum(["seedling", "budding", "evergreen"]).default("seedling"),
   description: z.string(),
 });
-
-/** `seedling` | `budding` | `evergreen` */
-export type GrowthStage = z.infer<typeof noteSchema>["stage"];
 
 const jsPosts = defineCollection({
   // Load Markdown and MDX files in the `src/content/posts/js` directory.
