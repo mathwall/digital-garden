@@ -2,10 +2,13 @@
 /**
  * "Why a digital garden?": a `sage-tint` block near the end of the home page,
  * closed by a small signature (the illustrated avatar, 52px round with a 2px
- * `sage-deep` ring; "Mathilde" handwritten; the job title; "More about me").
+ * `sage-deep` ring; "Mathilde" handwritten; the job title; "More about me",
+ * an external link to LinkedIn in a new tab, with a ↗ arrow).
  * The only place the avatar appears. Text from the "Mixed" home mockup.
  * Ported from the design system (SignOff, `.mg-why` / `.mg-signoff`).
  */
+import { SOCIAL_LINKS } from "../consts";
+import Icon from "./icons/Icon.astro";
 ---
 
 <section class="why" aria-labelledby="why-heading">
@@ -28,7 +31,15 @@
     <div class="signoff-txt">
       <span class="name">Mathilde</span>
       <span class="job">full-stack product engineer</span>
-      <a class="link about" href="/about">More about me</a>
+      <a
+        class="link more"
+        href={SOCIAL_LINKS.linkedin}
+        target="_blank"
+        rel="noopener"
+      >
+        More about me<span class="sr-only"> on LinkedIn (opens in a new tab)</span>
+        <Icon name="arrow-up-right" class="arrow" size={16} />
+      </a>
     </div>
   </div>
 </section>
@@ -94,8 +105,11 @@
   }
 
   /* `.link` (global) gives the colour and underline */
-  .about {
+  .more {
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
     align-self: flex-start;
     padding: 4px 0;
     font-size: 15px;
@@ -104,9 +118,13 @@
   }
 
   /* Tap area stretched to the 44px touch target without moving the text */
-  .about::after {
+  .more::after {
     content: "";
     position: absolute;
     inset: -8px 0;
+  }
+
+  .arrow {
+    flex: none;
   }
 </style>

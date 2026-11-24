@@ -13,7 +13,7 @@
  * closes on a second tap, Escape (focus back on the button), a link tap, a
  * click outside the header, or when focus moves out of it.
  *
- * `current` (from the layouts): "" for home, a topic slug, "about"…; the
+ * `current` (from the layouts): "" for home, a topic slug, "notes"; the
  * matching row or pill gets `aria-current` ("page" on that exact page,
  * "true" on a page inside the topic, e.g. a note).
  *
@@ -65,7 +65,6 @@ const rows = [
 
 const pills = [
   { href: "/notes", label: "all notes", current: currentFor("/notes", "notes") },
-  { href: "/about", label: "about me", current: currentFor("/about", "about") },
   { href: SOCIAL_LINKS.github, label: "GitHub" },
   { href: SOCIAL_LINKS.linkedin, label: "LinkedIn" },
 ];
