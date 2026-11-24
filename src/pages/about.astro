@@ -12,8 +12,8 @@ const permalink = `${Astro.site.href}about`;
   permalink={permalink}
   current="about"
 >
-  <div class="container">
-    <h1>About</h1>
+  <h1>About</h1>
+  <div class="prose">
     <figure class="about-image">
       <img
         src="/assets/about-illustration.webp"
@@ -76,21 +76,20 @@ const permalink = `${Astro.site.href}about`;
 </BaseLayout>
 
 <style>
-  .about-image {
-    float: right;
-    margin: -3em -7em 2em 2em;
-    max-width: 300px;
+  /* Same rhythm as the note page: page title, then prose */
+  h1 {
+    margin-bottom: var(--space-6);
   }
 
   .about-image img {
-    border-radius: 8px;
-    margin-bottom: 1.5em;
+    width: 100%;
+    max-width: 330px;
+    height: auto;
   }
 
-  @media (max-width: 1020px) {
-    .about-image {
-      float: none;
-      margin: 0 auto 2em;
+  @media (min-width: 960px) {
+    h1 {
+      margin-bottom: var(--space-7);
     }
   }
 </style>
