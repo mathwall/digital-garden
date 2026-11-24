@@ -27,7 +27,16 @@ const { note } = Astro.props;
 const { title, description, updatedDate } = note.entry.data;
 const updated = updatedDate ? parsePublishDate(updatedDate) : undefined;
 const permalink = `${Astro.site!.href}${note.href.slice(1)}`;
-const { Content } = await render(note.entry);
+const { Content, headings } = await render(note.entry);
+
+// Desktop rail: the note's sections (h2 only, when there are 2 or more) and
+// up to 3 other notes of the same topic, newest first.
+const sections = headings.filter((heading) => heading.depth === 2);
+const showToc = sections.length >= 2;
+const related = (await getNotes(note.topic))
+  .filter((other) => other.href !== note.href)
+  .slice(0, 3);
+const showRail = showToc || related.length > 0;
 ---
 
 <BaseLayout
@@ -35,39 +44,134 @@ const { Content } = await render(note.entry);
   description={description}
   permalink={permalink}
   current={note.topic.slug}
+  wide
 >
-  <article>
-    <header class="note-head">
-      <TopicTag topic={note.topic} />
-      <h1>{title}</h1>
-      <p class="dates">
-        <span>
+  <div class="note-layout">
+    <article class="note">
+      <header class="note-head">
+        <TopicTag topic={note.topic} />
+        <h1>{title}</h1>
+        <p class="dates">
+          <span>
+            Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
+          </span>
+          {
+            updated && (
+              <span>
+                Tended <time datetime={isoDay(updated)}>{formatNoteDate(updated)}</time>
+              </span>
+            )
+          }
+          <span>{note.readingTime}</span>
+        </p>
+      </header>
+      <div class="prose">
+        <Content />
+      </div>
+      <footer class="note-end" data-note-end>
+        <a class="link back" href={`/${note.topic.slug}`}>
+          <Icon name="chevron-left" size={20} />
+          All {note.topic.name} notes
+        </a>
+        <span class="planted">
           Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
         </span>
-        {
-          updated && (
-            <span>
-              Tended <time datetime={isoDay(updated)}>{formatNoteDate(updated)}</time>
-            </span>
-          )
-        }
-        <span>{note.readingTime}</span>
-      </p>
-    </header>
-    <div class="prose">
-      <Content />
-    </div>
-    <footer class="note-end">
-      <a class="link back" href={`/${note.topic.slug}`}>
-        <Icon name="chevron-left" size={20} />
-        All {note.topic.name} notes
-      </a>
-      <span class="planted">
-        Planted <time datetime={isoDay(note.date)}>{formatNoteDate(note.date)}</time>
-      </span>
-    </footer>
-  </article>
+      </footer>
+    </article>
+
+    {
+      showRail && (
+        <aside class="rail" aria-label="About this note">
+          {showToc && (
+            <nav class="toc" aria-labelledby="toc-label">
+              <p class="label" id="toc-label">
+                On this page
+              </p>
+              <ol class="toc-list" role="list">
+                {sections.map((section) => (
+                  <li>
+                    <a href={`#${section.slug}`} data-toc-link>
+                      <span class="dot" aria-hidden="true" />
+                      {section.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+          {related.length > 0 && (
+            <section class="more" aria-labelledby="more-label">
+              <p class="label" id="more-label">
+                Also in {note.topic.name}
+              </p>
+              <ul class="more-list" role="list">
+                {related.map((other) => (
+                  <li>
+                    <a href={other.href}>{other.entry.data.title}</a>
+                    <p>{other.entry.data.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </aside>
+      )
+    }
+  </div>
 </BaseLayout>
+
+<script>
+  // "On this page": mark the section being read (`aria-current="true"`:
+  // sage-deep dot + bold). The current one is the last h2 above a line 30%
+  // down the viewport, or the last h2 once the end of the note is in view.
+  // The observers only say when to look again (a heading or the end crossed
+  // a line); without JS (or IntersectionObserver) nothing is marked.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")];
+
+  if (links.length > 0 && "IntersectionObserver" in window) {
+    const sections = links.flatMap((link) => {
+      const heading = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      return heading ? [{ link, heading }] : [];
+    });
+    const end = document.querySelector("[data-note-end]");
+    const LINE = 0.3;
+    let endInView = false;
+    let current: HTMLAnchorElement | undefined;
+
+    const update = () => {
+      let next: HTMLAnchorElement | undefined;
+      if (endInView && window.scrollY > 0) {
+        next = sections.at(-1)?.link;
+      } else {
+        const line = window.innerHeight * LINE;
+        for (const { link, heading } of sections) {
+          if (heading.getBoundingClientRect().top > line) break;
+          next = link;
+        }
+      }
+      if (next === current) return;
+      current?.removeAttribute("aria-current");
+      next?.setAttribute("aria-current", "true");
+      current = next;
+    };
+
+    // Fires when a heading crosses the top 30% band's edges
+    const headingObserver = new IntersectionObserver(update, {
+      rootMargin: "0px 0px -70% 0px",
+    });
+    sections.forEach(({ heading }) => headingObserver.observe(heading));
+
+    if (end) {
+      new IntersectionObserver(
+        ([entry]) => {
+          endInView = entry.isIntersecting;
+          update();
+        },
+        { threshold: 1 },
+      ).observe(end);
+    }
+  }
+</script>
 
 <style>
   /* Left-aligned like every page header: tag, page title, then dates + read time */
@@ -130,10 +234,121 @@ const { Content } = await render(note.entry);
     color: var(--ink-muted);
   }
 
+  /* The rail is desktop only */
+  .rail {
+    display: none;
+  }
+
+  /* Desktop: the note (680px max) and a rail beside it, 56px under the
+     header with main's 32px. The rail keeps 280px at 960px (the note
+     column shrinks first). */
   @media (min-width: 960px) {
+    .note-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 680px) minmax(280px, 1fr);
+      align-items: start;
+      column-gap: var(--space-8);
+      padding-top: var(--space-5);
+    }
+
+    /* A hairline closes the header */
     .note-head {
       gap: var(--space-4);
-      margin-bottom: var(--space-7);
+      margin-bottom: var(--space-5);
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* Sticky 32px under the header's place: the bar never covers it,
+       shown or tucked. Scrolls on its own if taller than the window; the
+       4px padding keeps its links' focus rings inside the scroll box. */
+    .rail {
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-6));
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      max-height: calc(100vh - var(--header-height) - 2 * var(--space-6));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      margin: calc(-1 * var(--space-1));
+      padding: var(--space-1);
+    }
+
+    .toc,
+    .more {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .toc-list,
+    .more-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc-list {
+      border-top: 1px solid var(--rule);
+    }
+
+    .toc-list a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: var(--touch-target);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .toc-list a:hover {
+      color: var(--beet);
+    }
+
+    /* The section being read (set by the script) */
+    .toc-list a[aria-current="true"] {
+      font-weight: 650;
+    }
+
+    .dot {
+      flex: none;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .toc-list a[aria-current="true"] .dot {
+      background: var(--sage-deep);
+    }
+
+    .more-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .more-list a {
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 650;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .more-list a:hover {
+      color: var(--beet);
+    }
+
+    .more-list p {
+      margin-top: 2px;
+      font-size: 15px;
+      line-height: 22px;
+      color: var(--ink-muted);
     }
   }
 </style>
