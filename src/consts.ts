@@ -4,13 +4,10 @@
 export const SITE_TITLE = "Mathilde Sauvage";
 export const SITE_DESCRIPTION = "Welcome to my digital garden!";
 
-/**
- * Social profiles, used by the footer and (step 4) the menu pills.
- * TODO(Mathilde): confirm GitHub (inferred from the git remote) and fill in LinkedIn.
- */
+/** Social profiles, used by the footer, the menu pills and the home sign-off. */
 export const SOCIAL_LINKS = {
   github: "https://github.com/mathwall",
-  linkedin: "#",
+  linkedin: "https://www.linkedin.com/in/mathilde-sauvage-a4764482/",
 } as const;
 
 /** Names accepted by `components/icons/Vegetable.astro`. */
