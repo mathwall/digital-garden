@@ -75,6 +75,9 @@ export default defineConfig({
   markdown: {
     shikiConfig: {
       theme: "css-variables",
+      // Shiki has no SVG grammar: highlight ```svg fences as XML while
+      // keeping "svg" as their language (so the label reads "SVG").
+      langAlias: { svg: "xml" },
       transformers: [codeFigure],
     },
     remarkPlugins: [remarkGfm, remarkSmartypants],
