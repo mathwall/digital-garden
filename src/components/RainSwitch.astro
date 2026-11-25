@@ -48,7 +48,9 @@ const { variant = "footer", class: className, ...attrs } = Astro.props;
 
 <script>
   const STORAGE_KEY = "rain";
-  const DROP_COUNT = 80;
+  const DROP_COUNT = 700;
+  const DROPS_PER_BATCH = 15;
+  const BATCH_INTERVAL = 100; // ms
   let overlay: HTMLElement | undefined;
 
   function readRain(): boolean {
@@ -67,32 +69,48 @@ const { variant = "footer", class: className, ...attrs } = Astro.props;
     }
   }
 
-  function createOverlay(): HTMLElement {
+  /**
+   * Drops as on the original rain button: 2–4px round drops falling in
+   * 0.5–1s, 15 more every 100ms up to 700.
+   *
+   * `fromTop`: each batch waits its turn, then falls from the top of the screen
+   * (the rain starts when switched on). Otherwise a negative delay puts the
+   * drops already mid-fall (the rain carries on from the previous page).
+   */
+  function createOverlay(fromTop: boolean): HTMLElement {
     const rain = document.createElement("div");
     rain.className = "rain";
     rain.setAttribute("aria-hidden", "true");
     for (let i = 0; i < DROP_COUNT; i++) {
       const drop = document.createElement("span");
-      const duration = 1.2 + Math.random() * 1.2; // 1.2–2.4s
+      const size = 2 + Math.floor(Math.random() * 3); // 2–4px
+      const duration = 500 + Math.random() * 500; // 0.5–1s
+      const delay = fromTop
+        ? Math.floor(i / DROPS_PER_BATCH) * BATCH_INTERVAL
+        : -Math.random() * duration;
       drop.className = "drop";
       drop.style.left = `${(Math.random() * 100).toFixed(2)}%`;
-      drop.style.animationDuration = `${duration.toFixed(2)}s`;
-      // Negative delay: drops are already mid-fall when the rain starts.
-      drop.style.animationDelay = `${(-Math.random() * duration).toFixed(2)}s`;
+      drop.style.width = `${size}px`;
+      // 2px taller than wide: a drop rather than a dot
+      drop.style.height = `${size + 2}px`;
+      drop.style.animationDuration = `${Math.round(duration)}ms`;
+      drop.style.animationDelay = `${Math.round(delay)}ms`;
       rain.append(drop);
     }
     return rain;
   }
 
-  function applyRain(on: boolean) {
+  function applyRain(on: boolean, fromTop = true) {
     document
       .querySelectorAll("[data-rain-switch]")
       .forEach((button) => button.setAttribute("aria-checked", String(on)));
     if (on) {
-      overlay ??= createOverlay();
-      if (!overlay.isConnected) document.body.append(overlay);
+      if (overlay?.isConnected) return;
+      overlay = createOverlay(fromTop);
+      document.body.append(overlay);
     } else {
       overlay?.remove();
+      overlay = undefined;
     }
   }
 
@@ -109,7 +127,7 @@ const { variant = "footer", class: className, ...attrs } = Astro.props;
     if (event.key === STORAGE_KEY) applyRain(event.newValue === "true");
   });
 
-  applyRain(readRain());
+  applyRain(readRain(), false);
 </script>
 
 <style>
@@ -232,18 +250,21 @@ const { variant = "footer", class: className, ...attrs } = Astro.props;
 
   :global(.rain .drop) {
     position: absolute;
-    top: -40px;
-    width: 2px;
-    height: 16px;
-    border-radius: 2px;
-    background: var(--rain);
-    opacity: 0.7;
+    top: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--rain) 50%, transparent),
+      var(--rain)
+    );
+    /* Just above the screen, centred on its left: hidden while it waits its turn */
+    transform: translate(-50%, -100%);
     animation: rain-fall linear infinite;
   }
 
   @keyframes rain-fall {
     to {
-      transform: translateY(110vh);
+      transform: translate(-50%, 100vh);
     }
   }
 
