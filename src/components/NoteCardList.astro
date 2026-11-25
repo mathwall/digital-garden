@@ -6,6 +6,8 @@
  * `layout` only changes desktop (960px+); phones always get one column:
  * - "list" (default): one column within `measure`.
  * - "pair": two columns (the home's "Freshly planted" 2 × 2).
+ * - "grid": as many 320px+ columns as fit the page width (topic pages,
+ *   /notes; the page must be `wide`).
  */
 import type { Note } from "../lib/notes";
 import NoteCard from "./NoteCard.astro";
@@ -14,7 +16,7 @@ export interface Props {
   notes: Note[];
   /** Passed to each NoteCard: 3 under a section `h2`, 2 under the page `h1`. */
   headingLevel?: 2 | 3;
-  layout?: "list" | "pair";
+  layout?: "list" | "pair" | "grid";
 }
 
 const { notes, headingLevel = 3, layout = "list" } = Astro.props;
@@ -39,6 +41,13 @@ const { notes, headingLevel = 3, layout = "list" } = Astro.props;
     .cards--pair {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+      max-width: none;
+    }
+
+    .cards--grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: var(--space-4);
       max-width: none;
     }

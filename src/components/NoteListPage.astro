@@ -2,7 +2,7 @@
 /**
  * A page listing notes as NoteCards: mono label, page title (`h1`), note
  * count, then the cards (newest first, as given). Used by the topic pages
- * and `/notes`.
+ * and `/notes`. Desktop: the cards fill a grid across `page-max`.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NoteCardList from "./NoteCardList.astro";
@@ -31,6 +31,7 @@ const { title, description, permalink, current, label, pageTitle, notes } =
   description={description}
   permalink={permalink}
   current={current}
+  wide
 >
   <div class="page">
     <header class="page-head">
@@ -38,7 +39,7 @@ const { title, description, permalink, current, label, pageTitle, notes } =
       <h1>{pageTitle}</h1>
       <p class="count">{formatNoteCount(notes.length)}</p>
     </header>
-    <NoteCardList notes={notes} headingLevel={2} />
+    <NoteCardList notes={notes} headingLevel={2} layout="grid" />
   </div>
 </BaseLayout>
 
